@@ -9,6 +9,7 @@ app.get('/', function(request, response) {
   var table_data= JSON.stringify([table_json[0]])//send only first element
   var html= html.replace('CHART_DATA',chart_data)
   var html= html.replace('TABLE_DATA',table_data) 
+  var html= html.replace('CHAMPION',table_json[0][2]+', '+table_json[0][3]) 
   response.send(html);
 });
 

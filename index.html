@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>My First Bitstarter</title>
+    <title>LocusAmoenus.eu - The Weather Ranking</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fbootstrap-combined.no-icons.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css">
@@ -12,7 +12,6 @@
     <link href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
     <style type="text/css">
-
 
       /* Large desktop */
       @media (min-width: 980px) { 
@@ -68,7 +67,7 @@
         padding: 2% 0%;
       }
       .actions {
-        background-color: #343434;
+        /*background-color: #343434;*/
         padding: 3% 0%;
       }
       .video, .thermometer, .order, .social, .statistics {
@@ -102,6 +101,17 @@
         width:180px;
         margin: 0 auto;
      }
+
+     #chart_div {
+        padding: 3% 0%;
+        width:  800px;
+        height: 600px;
+     }
+
+     #table_div {
+        padding: 3% 0%;
+     }
+
     </style>
     <!-- asynchronous google analytics. -->
     <script type="text/javascript">
@@ -117,6 +127,55 @@
       })();
 
     </script>
+
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <!-- google table adapted from example -->
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number','Points');
+        data.addColumn('string', 'IATA');
+        data.addColumn('string', 'City');
+        data.addColumn('string', 'Country'); 
+        data.addColumn({type:'number', label:'Temp'}); 
+        data.addColumn({type:'number', label:'Wind'}); 
+        data.addColumn({type:'number', label:'Humi'}); 
+        data.addColumn({type:'number', label:'Clouds'});
+        data.addColumn({type:'number', label:'UTCI'}); 
+        data.addColumn({type:'number', label:'Country Rank'}); 
+        data.addColumn({type:'number', label:'World Rank'}); 
+
+        data.addRows(TABLE_DATA);
+
+        var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C', pattern: '##.#'});
+        var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   , pattern: '##.#'});
+        var pFormatter = new google.visualization.NumberFormat({suffix: '%'     , pattern: '###'});
+        tFormatter.format(data, 4); // Apply formatter to 5th column
+        vFormatter.format(data, 5);
+        pFormatter.format(data, 6);
+        pFormatter.format(data, 7);
+        tFormatter.format(data, 8);
+        
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false,page: 'enabled'});
+      }
+    </script>
+    <!-- google geo-chart adapted from example -->
+    <script type='text/javascript'>
+     google.load('visualization', '1', {'packages': ['geochart']});
+     google.setOnLoadCallback(drawRegionsMap);
+
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable(CHART_DATA);
+
+        var options = {colorAxis: {colors: ['red','yellow', 'green']}};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    };
+    </script>
   </head>
   <body>
 
@@ -131,7 +190,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Bitstarter</a>
+          <a class="brand" href="#">LocusAmoenus</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
@@ -147,68 +206,38 @@
     <!-- blogs.endjin.com/2013/04/tips-for-implementing-responsive-designs-using-bootstrap/ -->
     <!-- http://stackoverflow.com/a/12270322 -->
     <div class="container">
+      
+
       <!-- Font and paired font of .heading/.subheading and body from Google Fonts -->
       <!-- www.google.com/fonts/specimen/Ubuntu -->
       <!-- www.google.com/fonts/specimen/Ubuntu#pairings -->
       <div class="row-fluid heading">
         <div class="span12">
-          <h1>lessbets.com</h1>
+          <h1>LocusAmoenus.eu</h1>
         </div>
       </div> 
       <div class="row-fluid subheading">
         <div class="span12">
           <!-- Special typography from Bootstrap for lead paragraph. -->
           <!-- http://twitter.github.io/bootstrap/base-css.html#typography -->
-          <p class="lead">Social and frictionless betting.</p>
+          <p class="lead">The World Weather Ranking.</p>
         </div>
       </div>
-      <div class="row-fluid pitch">
-        <div class="span5 offset1 video">
-          <img class="img-polaroid" alt="Placeholder" src="http://placehold.it/480x300">
-        </div>
+
+      <div class="row-fluid">
+
+      <div id="table_div" class="span12">
+      </div>
 
         <!-- We define a new 'actions' div to contain statistics, order, and share buttons.-->
-        <div class="span5 actions">
+      <div class="span4 offset4 actions">
           <div class="row-fluid">
-          <div class="span8 offset2">
-            <div class="row-fluid statistics">
-              <div class="span4">
-                <!-- linediv-l and linediv-r give dividing lines that look
-                different in horizontal and vertical layouts, illustrating
-                media queries. -->
-                <div class="linediv-l">
-                <h3>1000</h3> <p>backers</p>
-                </div>
-              </div>
-              <div class="span4">
-                <div class="linediv-c">
-                  <h3>$6000</h3> <p>of $10,000</p>
-                </div>
-              </div>
-              <div class="span4">
-                <div class="linediv-r">
-                <h3>10</h3> <p>days left</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row-fluid">
-          <div class="span10 offset1">
-            <!-- Bootstrap progress bar -->
-            <!-- http://twitter.github.io/bootstrap/components.html#progress -->
-            <div class="thermometer progress active">
-              <div class="bar bar-success" style="width: 60%;"></div>
-              <div class="bar bar-warning" style="width: 40%;"></div>
-            </div>
-          </div>
-          </div>
-          <div class="row-fluid">
-          <div class="span6 offset3 order">
+          <div class="span8 offset2 order">
             <!-- Standard Bootstrap button. -->
             <!-- http://twitter.github.io/bootstrap/base-css.html#buttons -->
             <a class="coinbase-button" 
                data-button-style="custom_large" 
-               data-button-text="Preorder with Bitcoin" 
+               data-button-text="Support with Bitcoin" 
                data-code="4ab4e0d06e64a1b202087353df98b90b"
                href="https://coinbase.com/checkouts/4ab4e0d06e64a1b202087353df98b90b">Preorder with Bitcoin</a>
             <script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
@@ -230,59 +259,33 @@
           </div>
           </div>
         </div>
-        </div>
       </div>
+
 
       <!-- Beyond this part the marketing copy begins. -->
       <!-- https://developer.mozilla.org/en-US/docs/Web/CSS/text-align -->
       <!-- http://twitter.github.io/bootstrap/base-css.html#images -->
       <!-- http://placehold.it -->
+      <!--
       <div class="row-fluid section1">
         <div class="span5 offset1 asset">
           <img class="img-polaroid" alt="Placeholder" src="http://placehold.it/480x300">
         </div>
         <div class="span5 copy">
-		  <p>
-           I will allow you to place bets in a different way. Almost revolutionary.
-           This are the three key features that make lessbets.com attractive:
-		  </p>
-           <ol>
-            <li><p>Naive. When you place a bet, you will <b>always</b> get some money back, no matter how bad you did.</p></li>
-            <li><p>Frictionless. <b>Bitcoins</b> is the only accepted currency and one of its features will allow to manage bets more freely (I am not talking about what you may think). More below.</p></li>
-            <li><p>Social. You can create your bets and share with your Facebook's friends. Allowing users to <b>easily</b> create <b>trustworthy bets </b> is a puzzle, but feasible.</p></li>
-           </ol>  
-          <p> 
-            The first stament sounds like a scam. Agreed. But, of course, there is a down side on it:
-            winner's profit have to be reduced to distribute the collected money among all the participants.
-            On the other hand, users will perceive that betting on lessbets.com is less risky and have the posibility to fine tune their bets' positions.
-            As bitcoins are divisible up to 8 decimal digits (satoshi), even if you bet a tiny amount of bitcoins, you can distribute them (according to your expectations) among the possible outcomes
-            of a bet.
-          </p>
         </div>
       </div>
 
       <div class="row-fluid section2">
         <div class="span5 offset1 copy copy-right">
-        <p>
-        So, imagine that you are working in the MetOffice (UK's Weather Agency), have access to the best and most extend weather forecast data and it is not illegal to make use of this inside
-information (not sure about that).
-        You think that you can answer following question very accurately:</p> 
-        <p>"What will be the temperature tomorrow at 12:00 at London's Heahrow airport?"</p>
-        <p>You google and discover that google's <a href="https://www.google.co.uk/search?q=heathrow+airport+weather">answer</a> gives you the current temperature as a result.<br><br>
-        Let me think...<br><br>
-        Aha!<br><br>
-        So you can use google's answer as a "source of truth" for defining your bet. Now, the question has to change:</p>
-        <p>"What would be the number published in this google result tomorrow between 12:05 and 12:55?"</p>
-        <p> Once you have redefined the bet into an statement automatically verificable and non-controversial,
-        you can place a bet on it using your good insight about the local weather. Next step is sharing this bet among your facebook friends to have fun (and let them know who is the master).
-        There is a  problem, of course. A few of them are your colleagues from the Agency, and may do better than you, but this is another history...
-        </p>
         </div>
         <div class="span5 asset">
           <img class="img-polaroid" alt="Placeholder" src="http://placehold.it/480x300">
         </div>
       </div>
-
+      -->
+      <div id="chart_div" class="span12" >
+      </div>
+      
       <!-- For the FAQ, we introduce a little bit of JS, using the accordion. -->
       <!-- This brings in jquery.js and bootstrap.js as dependencies. -->
       <!-- http://twitter.github.io/bootstrap/javascript.html#collapse -->
@@ -332,6 +335,7 @@ information (not sure about that).
             put at the bottom of the page.</p>
         </div>
       </div>
+    
     </div>
 
     <script>

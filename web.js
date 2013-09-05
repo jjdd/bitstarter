@@ -3,7 +3,12 @@ var fs = require('fs')
 var app = express.createServer(express.logger());
 
 app.get('/', function(request, response) {
-  response.send(fs.readFileSync('index.html').toString());
+  var html= fs.readFileSync('index.html').toString()
+  var chart_data= fs.readFileSync('country_chart.json').toString()
+  var table_data= fs.readFileSync('table.json').toString()
+  var html= html.replace('CHART_DATA',chart_data)
+  var html= html.replace('TABLE_DATA',table_data) 
+  response.send(html);
 });
 
 var port = process.env.PORT || 8000;

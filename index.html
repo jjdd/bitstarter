@@ -149,9 +149,9 @@
 
         data.addRows(TABLE_DATA);
 
-        var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C', pattern: '##.#'});
-        var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   , pattern: '##.#'});
-        var pFormatter = new google.visualization.NumberFormat({suffix: '%'     , pattern: '###'});
+        var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
+        var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
+        var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
         tFormatter.format(data, 4); // Apply formatter to 5th column
         vFormatter.format(data, 5);
         pFormatter.format(data, 6);
@@ -237,8 +237,12 @@
          <div class="span12" style="min-height: 20px;"></div>
 
 			<div class="span6 offset3">
-				<input name="search" size=50></input>
-				<button>search</button>
+			
+				<form name="input" action="/" method="post">
+					<input name="search"></input>
+					<button>search</button>
+				</form> 
+
 			</div>         
          
          <div class="span12" style="min-height: 100px; max-height: 300px;"></div>
@@ -263,8 +267,7 @@
           <p>This work is licensed under
             the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC
               By-SA 3.0
-            </a>, without all the cruft that would otherwise be
-            put at the bottom of the page.</p>
+            </a></p>
         </div>
       </div>
     

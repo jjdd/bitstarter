@@ -135,7 +135,7 @@
       google.setOnLoadCallback(drawTable);
       function drawTable() {
         var data = new google.visualization.DataTable();
-        data.addColumn('number','Points');
+        data.addColumn('string','Points');
         data.addColumn('string', 'IATA');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
@@ -208,7 +208,7 @@
          
          <div class="span12" style="min-height: 50px; max-height: 100px;"></div>
          
-      	<div id="table_div" class="span8 offset2"></div>
+      	<div id="table_div" class="span8 offset2 caption"></div>
 
       </div>
       

@@ -135,7 +135,7 @@
       google.setOnLoadCallback(drawTable);
       function drawTable() {
         var data = new google.visualization.DataTable();
-        data.addColumn('number','Points');
+        data.addColumn('string','Points');
         data.addColumn('string', 'IATA');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
@@ -229,16 +229,15 @@
       <div class="row-fluid">
 
 
-      	<div id="chart_div" class="span12" ></div>
+      	<div id="chart_div" class="span12 caption" ></div>
       	<!--<div class="span12">
            <p class="caption">Average points per country</p>
 			</div>-->
 
          <div class="span12" style="min-height: 20px;"></div>
 
-			<div class="span6 offset3">
-			
-				<form name="input" action="/" method="post">
+			<div class="span4 offset4 caption">
+				<form  name="input" action="/" method="post">
 					<input name="search"></input>
 					<button>search</button>
 				</form> 
@@ -250,14 +249,14 @@
          <div class="span1 offset2">
             <img src="http://openclipart.org/people/netalloy/1297919410.svg" style="width: 50px;"></img>
 			</div>         
-         <div class="span6">
-				<h3 class="caption">CHAMPION</h3>
-         	<p class="caption">World Weather Champion <strong>right now</strong></p>
+         <div class="span6 caption">
+				<h3>CHAMPION</h3>
+         	<p>World Weather Champion <strong>right now</strong></p>
          </div>
          <div class="span1">
             <img src="http://openclipart.org/people/netalloy/1297919410.svg" style="width: 50px"></img>
 			</div>	
-      	<div id="table_div" class="span12"></div>
+      	<div id="table_div" class="span12 caption"></div>
       </div>
       
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->

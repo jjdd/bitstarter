@@ -9,6 +9,29 @@ var chart_json;
 //used for json parsing
 app.use(express.bodyParser());
 
+
+var NWPStyle= function(nwp){
+   var maxval= 128;	
+   var yellowFact= maxval*(500-Math.abs(nwp-500))/500;
+	var red= Math.round((1000-nwp)/1000*maxval+yellowFact);
+	var green= Math.round(nwp/1000*maxval+yellowFact);
+	return "<strong class='caption' style='color: rgb("+red.toString()+","+green.toString()+",50)'>"+ nwp.toString() + "</strong>";	 
+	};
+
+var setNWP= function(data){
+	for (i in data){
+		data[i]= [NWPStyle(data[i][0])].concat(data[i].slice(1,11));
+		}
+	return data;
+	};
+
+var collapseSpaces= function(term){
+	term= term.replace(/\s+/g, ' ');
+  	term= term.replace(/\s+$/g, '');
+  	term= term.replace(/^\s+/g, '');
+	return term;
+};
+
 var getSelection= function(term,data){
 	var result= [];
 	for (i in data){
@@ -23,7 +46,8 @@ app.get('/', function(request, response) {
   var html= fs.readFileSync('index.html').toString();
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
-  var table_data= JSON.stringify([table_json[0]]);//send only first element
+  var table_data= JSON.stringify(setNWP([table_json[0]]));//send only first element
+  console.log(table_data);
   var html= html.replace('CHART_DATA',chart_data);
   var html= html.replace('TABLE_DATA',table_data);
   var html= html.replace('CHAMPION',table_json[0][2]+', '+table_json[0][3]); 
@@ -35,16 +59,20 @@ app.post('/', function(request, response) {
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
   var table_data;
-  if (request.body.search){ 
-  	 table_data= JSON.stringify(getSelection(request.body.search,table_json));
-  	 }
+  
+  //collapse spaces, heading and trailing 
+  var search_term= collapseSpaces(request.body.search)
+  if (search_term)
+  	  table_data= JSON.stringify(setNWP(getSelection(search_term,table_json)));//filter
   else
-    table_data= JSON.stringify([table_json[0]]);//send only first element
+    table_data= JSON.stringify(setNWP(table_json));//send all elements
+    
   var html= html.replace('CHART_DATA',chart_data);
   var html= html.replace('TABLE_DATA',table_data);
   var html= html.replace('CHAMPION',table_json[0][2]+', '+table_json[0][3]); 
   response.send(html);
 });
+
 
 app.get('/set_table', function(request, response) {
   //ack

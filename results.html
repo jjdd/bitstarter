@@ -70,9 +70,15 @@
         /*background-color: #343434;*/
         padding: 3% 0%;
       }
+      
       .caption, .video, .thermometer, .order, .social, .statistics {
         text-align: center;
       }
+      
+      .comment {
+        text-align: right;
+      }      
+      
       .statistics h3, .statistics p {
         color: white;
       }
@@ -134,9 +140,15 @@
       google.load('visualization', '1', {packages:['table']});
       google.setOnLoadCallback(drawTable);
       function drawTable() {
+        var column= TABLE_COLUMNS;
+        var values= TABLE_DATA;     
+        //alert(JSON.stringify(column));
+        //alert(JSON.stringify(values));
+
         var data = new google.visualization.DataTable();
         data.addColumn('string','Points');
-        data.addColumn('string', 'IATA');
+        if (column.iata) data.addColumn('string', 'IATA');
+        if (column.icao) data.addColumn('string', 'ICAO');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
         data.addColumn({type:'number', label:'Temp'}); 
@@ -146,18 +158,20 @@
         data.addColumn({type:'number', label:'UTCI'}); 
         data.addColumn({type:'number', label:'Country Rank'}); 
         data.addColumn({type:'number', label:'World Rank'}); 
-
-        data.addRows(TABLE_DATA);
+        data.addRows(values);
 
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-        tFormatter.format(data, 4); // Apply formatter to 5th column
-        vFormatter.format(data, 5);
-        pFormatter.format(data, 6);
-        pFormatter.format(data, 7);
-        tFormatter.format(data, 8);
-        
+
+        var add=0;
+        if (column.iata) add+=1;
+        if (column.icao) add+=1;
+        tFormatter.format(data, 3+add); // Apply formatter to 5th column
+        vFormatter.format(data, 4+add);
+        pFormatter.format(data, 5+add);
+        pFormatter.format(data, 6+add);
+        tFormatter.format(data, 7+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false});
         
@@ -196,26 +210,28 @@
       
       <div class="row-fluid">
 
-			<div class="span8 offset2 caption">
+			<div class="span12 caption">
 			
 				<form name="input" action="/" method="post">
-				   <span style="font-size:20px;">Weather-Rank </span>
-				   <input name="search"></input>
+				<label style="font-size:20px;">Weather-Rank
+				   <input name="search" style="width:300px" value="SEARCH_TERM"></input>
 					<button>search</button>
+				</label>	
 				</form> 
-
-			</div>         
+         </div>
          
-         <div class="span12" style="min-height: 50px; max-height: 100px;"></div>
+         <div class="span12" style="min-height: 20px;"></div>
          
-      	<div id="table_div" class="span8 offset2 caption"></div>
-
+         <div class="span8 offset2 caption">
+			   <span style="font-size:10px;color:grey;">NUM_LOCATIONS results</span>  
+      	   <div id="table_div"></div>
+         </div>  
       </div>
       
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
       <!-- http://creativecommons.org/licenses/ -->
       <div class="row-fluid footer">
-        <div class="span12">
+        <div class="span12 caption">
           <p>This work is licensed under
             the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC
               By-SA 3.0

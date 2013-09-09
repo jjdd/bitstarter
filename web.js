@@ -58,6 +58,7 @@ app.get('/', function(request, response) {
   html= html.replace('CHART_DATA',chart_data);
   html= html.replace('TABLE_DATA',table_data);
   html= html.replace('CHAMPION',table_json[0][3]+', '+table_json[0][4]);//city and country 
+  html= html.replace('COUNTRY',table_json[0][4]);//country 
   html= html.replace('NUM_LOCATIONS',table_json.length);   
   response.send(html);
 });

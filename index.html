@@ -146,6 +146,7 @@
         data.addColumn('string','Points');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
+        data.addColumn({type:'string', label:'Time'}); 
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
@@ -156,14 +157,18 @@
 
         var values= TABLE_DATA;
         data.addRows(values);
+        //alert(JSON.stringify(values));
 
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-        tFormatter.format(data, 3); // Apply formatter to 5th column
-        vFormatter.format(data, 4);
-        pFormatter.format(data, 5);
-        tFormatter.format(data, 6);
+        //var Tformatter = new google.visualization.DateFormat({pattern: "h:mm a"});
+
+        //TFormatter.format(data, 4);
+        tFormatter.format(data, 4); // Apply formatter to 5th column
+        vFormatter.format(data, 5);
+        pFormatter.format(data, 6);
+        tFormatter.format(data, 7);
         
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false});
@@ -247,7 +252,7 @@
 					  <button>search</button>
                </a>					
 					<br>
-					<span style="font-size:10px;color:grey">NUM_LOCATIONS locations reported weather in last hour</span>
+					<span style="font-size:10px;color:grey">NUM_LOCATIONS stations reported weather in last hour</span>
 				</form> 
 
 			</div>         

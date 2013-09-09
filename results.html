@@ -154,6 +154,7 @@
         if (column.icao) data.addColumn('string', 'ICAO');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
+        data.addColumn({type:'string', label:'Time'});
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
@@ -170,10 +171,10 @@
         var add=0;
         if (column.iata) add+=1;
         if (column.icao) add+=1;
-        tFormatter.format(data, 3+add); // Apply formatter to 5th column
-        vFormatter.format(data, 4+add);
-        pFormatter.format(data, 5+add);
-        tFormatter.format(data, 6+add);
+        tFormatter.format(data, 4+add); // Apply formatter to 5th column
+        vFormatter.format(data, 5+add);
+        pFormatter.format(data, 6+add);
+        tFormatter.format(data, 7+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false});
         

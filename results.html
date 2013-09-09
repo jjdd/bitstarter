@@ -73,7 +73,6 @@
       }
       .actions {
         background-color: #343434;
-        padding: 3% 3%;
       }
       
       .caption, .video, .thermometer, .order, .social, .statistics {
@@ -136,7 +135,6 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-
     </script>
 
     <script type='text/javascript' src='https://www.google.com/jsapi'></script>
@@ -180,6 +178,31 @@
         
       }
     </script>
+    
+    <!-- google geo-chart country -->    
+    <script type='text/javascript'>
+      google.load('visualization', '1', {'packages': ['geochart']});
+      google.setOnLoadCallback(drawMarkersMap);
+
+      function drawMarkersMap(){
+      
+      var values = COUNTRY_DATA;
+      var data   = google.visualization.arrayToDataTable(values);
+
+      var options = {
+        region:      'COUNTRY_CODE',
+        displayMode: 'markers',
+        colorAxis:   {minValue: 0, maxValue: 1000, colors: ['red','yellow', 'green']},
+        legend: 'none'
+      };
+
+		if(COUNTRY_DISP){
+      	var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+      	chart.draw(data, options);
+      };
+    };
+    </script>    
+    
   </head>
   <body>
 
@@ -234,9 +257,11 @@
          </div>  
       </div>
 
-      <div class="span12" style="min-height: 100px;"></div>
+      <div class="span12" style="min-height: 30px;"></div>
+      <div id="chart_div" class="span12 caption;"  ></div>
+      <div class="span12" style="min-height: 30px;"></div>
 
-       <div class="span6 offset3 actions statistics">
+      <div class="span4 offset4 actions statistics">
           <h3>Do you like this?</h3>
           <p class="comments">This prototype is <a href="http://www.linkedin.com/pub/juanjo-dom%C3%ADnguez-duarte/26/475/61a" data-if-linkable="modal-lock">my</a> final project of the course <a href="https://www.coursera.org/course/startup" data-if-linkable="modal-lock">
         Startup Engineering</a> at Coursera. Please help me spread the word about this job:</p>
@@ -257,10 +282,10 @@
           </div>
           </div>
 
-            <p class="comments">Or, in case you really like it, you can even consider that option:</p>
+          <p class="comments">Or, in case you really like it, you can even consider that option:</p>
 
           <div class="row-fluid">
-          <div class="span4 offset4 order">
+          <div class="span6 offset3 order">
             <!-- Standard Bootstrap button. -->
             <!-- http://twitter.github.io/bootstrap/base-css.html#buttons -->
             <a class="coinbase-button"
@@ -274,7 +299,7 @@
           </div>
       </div>
 
-      <div class="span12" style="min-height: 100px;"></div>
+      <div class="span12" style="min-height: 30px;"></div>
       
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
       <!-- http://creativecommons.org/licenses/ -->

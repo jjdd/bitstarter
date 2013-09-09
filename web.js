@@ -65,19 +65,54 @@ app.get('/', function(request, response) {
   response.send(html);
 });
 
+/*
+		[
+        ['City',   'Population', 'Area'],
+        ['Rome',      2761477,    1285.31],
+        ['Milan',     1324110,    181.76],
+        ['Naples',    959574,     117.27],
+        ['Turin',     907563,     130.17],
+        ['Palermo',   655875,     158.9],
+        ['Genoa',     607906,     243.60],
+        ['Bologna',   380181,     140.7],
+        ['Florence',  371282,     102.41],
+        ['Fiumicino', 67370,      213.44],
+        ['Anzio',     52192,      43.43],
+        ['Ciampino',  38262,      11]
+      ]
+*/
+
 app.post('/', function(request, response) {
   var html= fs.readFileSync('results.html').toString();
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
-  var table_data;
-  
+  var countries= JSON.parse(fs.readFileSync('countries.json').toString()); 
+
   //collapse spaces, heading and trailing 
   var search_term= collapseSpaces(request.body.search)
-  var table_columns= JSON.stringify();//remove by default
   var selected;   
   if (search_term)  selected= getSelection(search_term,table_json); //filter
   else selected= {data:table_json, columns:{iata:false, icao:false}};
-  
+     
+  //add country chart if term is an unique country
+  var c_data= [];
+  var country_code= '';
+  var country_disp= 'false';
+  var sel_countries= [];
+  var cterm= search_term.toLowerCase();
+  for (coc in countries) {
+     if (countries[coc].toLowerCase().search(cterm)>=0){
+       sel_countries.push(coc);
+     };
+  };  
+  if(sel_countries.length==1){
+     c_data= selected.data.map(function(x){return [x[3]+' '+x[2],x[0]];});//city = city + ICAO
+     country_data= JSON.stringify([['City','Points']].concat(c_data));
+     country_disp= 'true'; 
+     country_code= sel_countries[0];  
+  };
+
+  // remove the unused columns
   selected.data= selected.data.map(function(x){
          x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
          x[12]= '<strong>' + x[12].toString() + '</strong>';
@@ -85,14 +120,17 @@ app.post('/', function(request, response) {
   	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
   	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
   	  		return x;  	  			
-  });// remove the unused columns
-
+  });
+  
   var table_data= JSON.stringify(setNWP(selected.data));
   var table_columns= JSON.stringify(selected.columns);
   html= html.replace('TABLE_DATA',table_data);
   html= html.replace('TABLE_COLUMNS',table_columns);    
   html= html.replace('SEARCH_TERM',search_term);  
   html= html.replace('NUM_LOCATIONS',selected.data.length); 
+  html= html.replace('COUNTRY_DATA',country_data);
+  html= html.replace('COUNTRY_CODE',country_code);
+  html= html.replace('COUNTRY_DISP',country_disp);
   response.send(html);  
 });
 
@@ -126,6 +164,24 @@ app.get('/set_chart', function(request, response) {
   var file = fs.createWriteStream("country_chart.json");
   http.get(options, function(response) {
     response.pipe(file);
+  });
+  var options2 = {
+    host: 'www.locusamoenus.eu',
+    port: 80,
+    path: '/regions.json'
+  };
+  var file2 = fs.createWriteStream("regions.json");
+  http.get(options2, function(response) {
+    response.pipe(file2);
+  });
+  var options3 = {
+    host: 'www.locusamoenus.eu',
+    port: 80,
+    path: '/countries.json'
+  };
+  var file3 = fs.createWriteStream("countries.json");
+  http.get(options3, function(response) {
+    response.pipe(file3);
   });
 });
 

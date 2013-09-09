@@ -51,6 +51,8 @@ app.get('/', function(request, response) {
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
   var champion= [[table_json[0][0]].concat(table_json[0].slice(3))];//remove iata,icao by default
+  champion[0][8]= '<strong>' + champion[0][8].toString() + '</strong>';//rankings
+  champion[0][9]= '<strong>' + champion[0][9].toString() + '</strong>';
   var table_data= JSON.stringify(setNWP(champion));//send only first element
   console.log(table_data);
   html= html.replace('CHART_DATA',chart_data);
@@ -74,6 +76,8 @@ app.post('/', function(request, response) {
   else selected= {data:table_json, columns:{iata:false, icao:false}};
   
   selected.data= selected.data.map(function(x){
+         x[10]= '<strong>' + x[10].toString() + '</strong>';//rankings
+         x[11]= '<strong>' + x[11].toString() + '</strong>';
   	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
   	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
   	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));

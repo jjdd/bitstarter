@@ -59,6 +59,11 @@
         line-height: 24px;
       }
 
+      p.comments {
+        padding-top: 5%;
+        line-height: 30px;
+      }
+
       /* Video pitch and Action */
       .pitch {
         padding: 2.5% 0%;
@@ -67,8 +72,8 @@
         padding: 2% 0%;
       }
       .actions {
-        /*background-color: #343434;*/
-        padding: 3% 0%;
+        background-color: #343434;
+        padding: 3% 3%;
       }
       
       .caption, .video, .thermometer, .order, .social, .statistics {
@@ -142,8 +147,6 @@
       function drawTable() {
         var column= TABLE_COLUMNS;
         var values= TABLE_DATA;     
-        //alert(JSON.stringify(column));
-        //alert(JSON.stringify(values));
 
         var data = new google.visualization.DataTable();
         data.addColumn('string','Points');
@@ -154,10 +157,10 @@
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
-        data.addColumn({type:'number', label:'Clouds'});
-        data.addColumn({type:'number', label:'UTCI'}); 
-        data.addColumn({type:'number', label:'Country Rank'}); 
-        data.addColumn({type:'number', label:'World Rank'}); 
+        data.addColumn({type:'number', label:'UTCI*'});         
+        data.addColumn({type:'string', label:'Weather'});
+        data.addColumn({type:'string', label:'Country Rank'}); 
+        data.addColumn({type:'string', label:'World Rank'}); 
         data.addRows(values);
 
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
@@ -170,8 +173,7 @@
         tFormatter.format(data, 3+add); // Apply formatter to 5th column
         vFormatter.format(data, 4+add);
         pFormatter.format(data, 5+add);
-        pFormatter.format(data, 6+add);
-        tFormatter.format(data, 7+add);
+        tFormatter.format(data, 6+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false});
         
@@ -191,10 +193,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Weather-Rank</a>
+          <a class="brand" href="/">Weather-Rank</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
+              <li class="active"><a href="/">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
@@ -213,25 +215,69 @@
 			<div class="span12 caption">
 			
 				<form name="input" action="/" method="post">
+				<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
 				<label style="font-size:20px;">Weather-Rank
 				   <input name="search" style="width:300px" value="SEARCH_TERM"></input>
 					<button>search</button>
-				</label>	
+				</label>
+				</a>
 				</form> 
          </div>
          
          <div class="span12" style="min-height: 20px;"></div>
          
-         <div class="span8 offset2 caption">
+         <div class="span10 offset1 caption">
 			   <span style="font-size:10px;color:grey;">NUM_LOCATIONS results</span>  
       	   <div id="table_div"></div>
+      	   <span style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</span> 
          </div>  
       </div>
+
+      <div class="span12" style="min-height: 100px;"></div>
+
+       <div class="span6 offset3 actions statistics">
+          <h3>Do you like this?</h3>
+          <p class="comments">This mooc-up is <a href="http://www.linkedin.com/pub/juanjo-dom%C3%ADnguez-duarte/26/475/61a" data-if-linkable="modal-lock">my</a> final project of the course <a href="https://www.coursera.org/course/startup" data-if-linkable="modal-lock">
+        Startup Engineering</a> at Coursera. Please help me to promote this job:</p>
+        
+          <div class="row-fluid">
+          <div class="span8 offset2 social">
+            <!-- AddThis Button BEGIN -->
+            <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                <a class="addthis_button_preferred_1"></a>
+                <a class="addthis_button_preferred_2"></a>
+                <a class="addthis_button_compact"></a>
+                <a class="addthis_counter addthis_bubble_style"></a>
+            </div>
+            <p class="comments">Or, in case you really like it, you can even can consider that option:</p>
+            
+            <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-520b493c24ad96b1"></script>
+            <!-- AddThis Button END -->
+          </div>
+          </div>
+
+          <div class="row-fluid">
+          <div class="span8 offset2 order">
+            <!-- Standard Bootstrap button. -->
+            <!-- http://twitter.github.io/bootstrap/base-css.html#buttons -->
+            <a class="coinbase-button"
+               data-button-style="custom_large"
+               data-button-text="Support with Bitcoin!"
+               data-code="4ab4e0d06e64a1b202087353df98b90b"
+               href="https://coinbase.com/checkouts/4ab4e0d06e64a1b202087353df98b90b">Support with Bitcoin</a>
+            <script src="https://coinbase.com/assets/button.js" type="text/javascript"></script>
+
+          </div>
+          </div>
+      </div>
+
+      <div class="span12" style="min-height: 100px;"></div>
       
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
       <!-- http://creativecommons.org/licenses/ -->
       <div class="row-fluid footer">
-        <div class="span12 caption">
+        <div class="span8 offset2 caption">
           <p>This work is licensed under
             the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC
               By-SA 3.0

@@ -198,6 +198,9 @@
 		if(COUNTRY_DISP){
       	var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
       	chart.draw(data, options);
+      }
+      else {
+          document.getElementById('chart_div').style.height= "0px";
       };
     };
     </script>    
@@ -247,8 +250,10 @@
 				</form> 
          </div>
          
-         <div class="span12" style="min-height: 20px;"></div>
-         
+         <div class="span12" style="min-height: 30px;"></div>
+         <div id="chart_div" class="span12 caption;"  ></div>
+         <div class="span12" style="min-height: 30px;"></div>
+               
          <div class="span10 offset1 caption">
 			   <span style="font-size:10px;color:grey;">NUM_LOCATIONS results</span>  
       	   <div id="table_div"></div>
@@ -256,8 +261,6 @@
          </div>  
       </div>
 
-      <div class="span12" style="min-height: 30px;"></div>
-      <div id="chart_div" class="span12 caption;"  ></div>
       <div class="span12" style="min-height: 30px;"></div>
 
       <div class="span4 offset4 actions statistics">

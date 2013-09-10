@@ -180,22 +180,22 @@
     
     <!-- google geo-chart country -->    
     <script type='text/javascript'>
-      google.load('visualization', '1', {'packages': ['geochart']});
-      google.setOnLoadCallback(drawMarkersMap);
-
-      function drawMarkersMap(){
-      
-      var values = COUNTRY_DATA;
-      var data   = google.visualization.arrayToDataTable(values);
-
-      var options = {
-        region:      'COUNTRY_CODE',
-        displayMode: 'markers',
-        colorAxis:   {minValue: 0, maxValue: 1000, colors: ['red','yellow', 'green']},
-        legend: 'none'
-      };
-
 		if(COUNTRY_DISP){
+      	google.load('visualization', '1', {'packages': ['geochart']});
+      	google.setOnLoadCallback(drawMarkersMap);
+
+      	function drawMarkersMap(){
+      
+      	var values = COUNTRY_DATA;
+      	var data   = google.visualization.arrayToDataTable(values);
+
+      	var options = {
+        		region:      'COUNTRY_CODE',
+        		displayMode: 'markers',
+        		colorAxis:   {minValue: 0, maxValue: 1000, colors: ['red','yellow', 'green']},
+        		legend: 'none'
+      	};
+
       	var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
       	chart.draw(data, options);
       }

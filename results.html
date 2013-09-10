@@ -180,7 +180,7 @@
     
     <!-- google geo-chart country -->    
     <script type='text/javascript'>
-		if(COUNTRY_DISP){
+    if(COUNTRY_DISP){
       	google.load('visualization', '1', {'packages': ['geochart']});
       	google.setOnLoadCallback(drawMarkersMap);
 
@@ -199,10 +199,8 @@
       	
       	var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
       	chart.draw(data, options);
-      }
-      else {
+    } else {
           document.getElementById('chart_div').style.height= "0px";
-      };
     };
     </script>    
     

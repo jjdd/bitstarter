@@ -114,7 +114,7 @@
 
      #chart_div {
         padding: 0% 0%;
-        height: 600px;
+        height: 0px;
      }
 
      #table_div {
@@ -180,12 +180,14 @@
     
     <!-- google geo-chart country -->    
     <script type='text/javascript'>
-    if(COUNTRY_DISP){
       	google.load('visualization', '1', {'packages': ['geochart']});
       	google.setOnLoadCallback(drawMarkersMap);
 
       	function drawMarkersMap(){
-      
+
+    		 if(COUNTRY_DISP){
+            document.getElementById('chart_div').style.height= "600px";    	
+
       		var values = COUNTRY_DATA;
       		var data   = google.visualization.arrayToDataTable(values);
 
@@ -193,15 +195,13 @@
         			region:      'COUNTRY_CODE',
         			displayMode: 'markers',
         			colorAxis:   {minValue: 0, maxValue: 1000, colors: ['red','yellow', 'green']},
-        			legend: 'none'
-      		};
-      	};
-      	
-      	var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
-      	chart.draw(data, options);
-    } else {
-          document.getElementById('chart_div').style.height= "0px";
-    };
+        			legend: 'none'};
+
+            var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+      	   chart.draw(data, options);
+      	 };
+      	 
+      	}
     </script>    
     
   </head>
@@ -249,9 +249,7 @@
 				</form> 
          </div>
          
-         <div class="span12" style="min-height: 30px;"></div>
          <div id="chart_div" class="span12 caption;"  ></div>
-         <div class="span12" style="min-height: 30px;"></div>
                
          <div class="span10 offset1 caption">
 			   <span style="font-size:10px;color:grey;">NUM_LOCATIONS results</span>  

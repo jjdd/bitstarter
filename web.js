@@ -105,7 +105,8 @@ app.post('/', function(request, response) {
        sel_countries.push(coc);
      };
   };  
-  if(sel_countries.length==1){
+  if(sel_countries.length==1 || sel_countries.length==2){
+     //c_data= selected.data.filter(function(x){return x[4]!=countries[sel_countries[0]]});  	
      c_data= selected.data.map(function(x){return [x[3]+' '+x[2],x[0]];});//city = city + ICAO
      country_data= JSON.stringify([['City','Points']].concat(c_data));
      country_disp= 'true'; 

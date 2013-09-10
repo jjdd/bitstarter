@@ -106,8 +106,12 @@ app.post('/', function(request, response) {
      };
   };  
   if(sel_countries.length==1 || sel_countries.length==2){
-     //c_data= selected.data.filter(function(x){return x[4]!=countries[sel_countries[0]]});  	
-     c_data= selected.data.map(function(x){return [x[3]+' '+x[2],x[0]];});//city = city + ICAO
+     //c_data= selected.data.filter(function(x){return x[4]!=countries[sel_countries[0]]}); 
+     c_data= selected.data.map(function(x){
+       var city= x[3]+' '+x[2];//city + IATA
+       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city= x[3]+' '+x[2];
+       return [city,x[0]];//city + ICAO
+    });
      country_data= JSON.stringify([['City','Points']].concat(c_data));
      country_disp= 'true'; 
      country_code= sel_countries[0];  

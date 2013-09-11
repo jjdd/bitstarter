@@ -119,8 +119,12 @@
 
      #table_div {
         padding: 0% 0%;
+     }   
+        
+      a {
+     	text-decoration: none;
+			color: #000000;
      }
-
     </style>
     <!-- asynchronous google analytics. -->
     <script type="text/javascript">
@@ -144,6 +148,18 @@
       function drawTable() {
         var column= TABLE_COLUMNS;
         var values= TABLE_DATA;     
+       
+        var add=0;
+        if (column.iata) add+=1;
+        if (column.icao) add+=1;       
+       
+        var iTime= 3+add;
+        for (i in values){
+            var d = new Date(values[i][iTime]);
+            var m = d.getMinutes();
+           if (m < 10) m = "0" + m;
+            values[i][iTime]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
+        }
 
         var data = new google.visualization.DataTable();
         data.addColumn('string','Points');
@@ -165,9 +181,7 @@
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
 
-        var add=0;
-        if (column.iata) add+=1;
-        if (column.icao) add+=1;
+        
         tFormatter.format(data, 4+add); // Apply formatter to 5th column
         vFormatter.format(data, 5+add);
         pFormatter.format(data, 6+add);
@@ -205,7 +219,6 @@
       	 
       	}
     </script>    
-    
   </head>
   <body>
 

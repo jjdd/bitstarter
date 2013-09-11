@@ -173,7 +173,7 @@
         pFormatter.format(data, 6+add);
         tFormatter.format(data, 7+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
-        table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false,width: 'automatic'});
+        table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false, width: 'automatic'});
         
       }
     </script>
@@ -186,7 +186,9 @@
       	function drawMarkersMap(){
 
     		 if(COUNTRY_DISP){
-            document.getElementById('chart_div').style.height= "600px";    	
+    		   var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
+            var h= Math.round(parseInt(w.split('p')[0])*3/4);
+            document.getElementById('chart_div').style.height= h.toString()+'px';
 
       		var values = COUNTRY_DATA;
       		var data   = google.visualization.arrayToDataTable(values);

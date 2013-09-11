@@ -186,7 +186,7 @@
       function drawRegionsMap() {
         var data = google.visualization.arrayToDataTable(CHART_DATA);
 
-        var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none', width:'automatic'};
+        var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none'};
 
         var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
         chart.draw(data, options);

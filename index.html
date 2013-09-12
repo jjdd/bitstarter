@@ -125,7 +125,6 @@
      
      a {
      	text-decoration: none;
-			color: #000000;
      }
     </style>
     <!-- asynchronous google analytics. -->
@@ -165,7 +164,9 @@
         var values= TABLE_DATA;
         for (i in values){
             var d = new Date(values[i][3]);
-            values[i][3]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+d.getMinutes()+'</a>';
+            var m = d.getMinutes();
+            if (m < 10) m = "0" + m;
+            values[i][3]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
 				   //values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
         }
 

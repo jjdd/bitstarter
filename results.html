@@ -123,7 +123,6 @@
         
       a {
      	text-decoration: none;
-			color: #000000;
      }
     </style>
     <!-- asynchronous google analytics. -->
@@ -157,7 +156,7 @@
         for (i in values){
             var d = new Date(values[i][iTime]);
             var m = d.getMinutes();
-           if (m < 10) m = "0" + m;
+            if (m < 10) m = "0" + m;
             values[i][iTime]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
         }
 

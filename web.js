@@ -87,6 +87,7 @@ app.post('/', function(request, response) {
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
   var countries= JSON.parse(fs.readFileSync('countries.json').toString()); 
+  var airports= JSON.parse(fs.readFileSync('airports.json').toString());
 
   //collapse spaces, heading and trailing 
   var search_term= collapseSpaces(request.body.search)
@@ -110,9 +111,11 @@ app.post('/', function(request, response) {
      c_data= selected.data.map(function(x){
        var city= x[3]+' '+x[1];//city + IATA
        if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city= x[3]+' '+x[2];
-       return [city,x[0]];//city + ICAO
+       lat= airports[x[2]][0]
+       lon= airports[x[2]][1]
+       return [lat,lon,city,x[0]];//city + ICAO
     });
-     country_data= JSON.stringify([['City','Points']].concat(c_data));
+     country_data= JSON.stringify([['Lat','Lon','City','Points']].concat(c_data));
      country_disp= 'true'; 
      country_code= sel_countries[0];  
   };
@@ -188,6 +191,17 @@ app.get('/set_chart', function(request, response) {
   http.get(options3, function(response) {
     response.pipe(file3);
   });
+
+  var options4 = {
+    host: 'www.locusamoenus.eu',
+    port: 80,
+    path: '/airports.json'
+  };
+  var file4 = fs.createWriteStream("airports.json");
+  http.get(options4, function(response) {
+    response.pipe(file4);
+  });
+
 });
 
 var port = process.env.PORT || 8000;

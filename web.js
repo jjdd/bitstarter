@@ -107,6 +107,7 @@ app.post('/', function(request, response) {
      };
   };  
   if(sel_countries.length==1 || sel_countries.length==2){
+  	  
      //c_data= selected.data.filter(function(x){return x[4]!=countries[sel_countries[0]]}); 
      c_data= selected.data.map(function(x){
        var city= x[3]+' '+x[1];//city + IATA
@@ -116,8 +117,11 @@ app.post('/', function(request, response) {
        return [lat,lon,city,x[0]];//city + ICAO
     });
      country_data= JSON.stringify([['Lat','Lon','City','Points']].concat(c_data));
-     country_disp= 'true'; 
-     country_code= sel_countries[0];  
+     country_disp= 'true';
+     sel_cod= sel_countries.reduce(function(x,y){
+     	 if(countries[x].length<countries[y].length) return x; else return y;
+     	},sel_countries[0]); 
+     country_code= sel_cod;//sel_countries[0];  
   };
 
   // remove the unused columns

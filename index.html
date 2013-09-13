@@ -223,8 +223,8 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="/">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="#best">Best</a></li>
+              <li><a href="#FAQ">FAQ</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -286,7 +286,7 @@
 			</div>         
          
          <div class="span12" style="height: 60px;"></div>    
-         <div class="span6 offset3 caption">
+         <div id="best" class="span6 offset3 caption">
 				<h3>CHAMPION</h3>
          	<p><em>"Best Weather in the World"</em></p>
          </div>
@@ -298,6 +298,83 @@
 
       	<div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
 		</div>
+		
+		<div class="span12" style="height: 60px;"></div>
+      
+      <div id="FAQ" class="row-fluid faq">
+          <div class="span10 offset1">
+            <h3>FAQ</h3>
+            <div class="accordion" id="accordion2">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion2" href="#collapseOne">
+                    What is a nice weather?
+                  </a>
+                </div>
+                <div id="collapseOne" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    This is a very subjective matter, it depends on your personal preferences or the activity you perform outdoors.
+                    Anyway, for the sake of ranking the weather conditions of different places, I have had to find a general definition of it.
+                    I consider that the optimum weather is the one with clear sky, no wind or a slight breeze, temperature in the range of thermal
+                    comfort (around 22&deg;C), some direct sunshine (but not too much) and relative humidity around 60%. 
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion2" href="#collapseTwo">
+                    How are the weather conditions ranked?
+                  </a>
+                </div>
+                <div id="collapseTwo" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    I assign points to the weather reported by meteorological stations around the world. The most close are its reported values
+                    (temperature, wind, cloud cover, etc.) to the optimum weather conditions, the most points the station gets. 
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion3" href="#collapse3">
+                    Where does data come from?
+                  </a>
+                </div>
+                <div id="collapse3" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    The web collects last available aeronautical meteorological reports (METAR) provided from airports or airfields around the world. These reports are
+                    used by pilots and air controllers in flight operations. There are other sources of meteorological data (other observations or
+                    computers' forecast outputs) but they are not so reliable or do not reflect actual conditions, as aeronautical reports do.
+                    Unfortunately, the density of airfields is not homogeneous in the world, there are more in areas such as United States
+                    or Europe, so this world ranking is quite <em>biased</em> (It is more likely that top weathers belong to the USA, for instance).
+                  </div>
+                </div>
+              </div>              
+              
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion4" href="#collapse4">
+                    Why did I create this web?
+                  </a>
+                </div>
+                <div id="collapse4" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                     <a href="http://www.linkedin.com/pub/juanjo-dom%C3%ADnguez-duarte/26/475/61a" data-if-linkable="modal-lock">I</a>
+                      have been doing the online  <a href="https://www.coursera.org/course/startup" data-if-linkable="modal-lock">
+                      Startup Engineering</a> course at Coursera. This web is a prototype for the course's alumni final project. In the future,
+                      I would like to provide a more comprehensive explanation about the web's data sources and the heuristic used to assign points to 
+                      the weather reports.
+                  </div>
+                </div>
+              </div>               
+              
+            </div>
+          </div>
+
+      </div>		
 		
       <div class="span12" style="height: 60px;"></div>      
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->

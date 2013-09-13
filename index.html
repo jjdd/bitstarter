@@ -27,7 +27,7 @@
       
         #chart_div {
         padding: 0% 10%;
-        height:  500px;
+        height:  100px;
         }
       
       }
@@ -46,7 +46,7 @@
  
         #chart_div {
         padding: 0% 10%;
-        height:  300px;
+        height:  100px;
         }
        
       }
@@ -197,9 +197,14 @@
 
       function drawRegionsMap() {
         var data = google.visualization.arrayToDataTable(CHART_DATA);
-
         var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none', width:'automatic'};
-
+        
+        //set map size
+        var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
+        var h= Math.round(parseInt(w.split('p')[0])*3/4*347/556);
+        document.getElementById('chart_div').style.height= h.toString()+'px';
+        
+        //plot map         
         var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
         chart.draw(data, options);
     };

@@ -196,7 +196,9 @@
      google.setOnLoadCallback(drawRegionsMap);
 
       function drawRegionsMap() {
-        var data = google.visualization.arrayToDataTable(CHART_DATA);
+        var values= CHART_DATA;
+        //alert(JSON.stringify(values));
+        var data = google.visualization.arrayToDataTable(values);
         var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none', width:'automatic'};
         
         //set map size
@@ -207,6 +209,23 @@
         //plot map         
         var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
         chart.draw(data, options);
+        
+        //listen mouse click   
+        google.visualization.events.addListener(chart, 'select', function(){
+         	var country= values[chart.getSelection()[0].row+1][0];
+         	var form = document.createElement("form");
+    			form.setAttribute("method", "post");
+    			form.setAttribute("action", "/");
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "search");
+            hiddenField.setAttribute("value", country);
+            form.appendChild(hiddenField);
+			   document.body.appendChild(form);
+    			form.submit();
+        });       
+      
+        	
     };
     </script>
 
@@ -279,16 +298,22 @@
 
          <div class="span12" style="height: 20px;"></div>
 
-			<div class="span12 caption">
-				<form  name="input" action="/" method="post">
-					<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
-					  <input name="search" style="width:300px"></input>
-					  <button>search</button>
-               </a>					
-					<br>
-					<span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>
-				</form> 
-			</div>         
+			<div class="row-fluid">
+		   	<div class="alert alert-success span4">
+					<strong>Start here.</strong> Search by city or country name.				    
+		   	</div>
+
+				<div class="span8 offset">
+					<form  name="input" action="/" method="post">
+						<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
+					  		<input name="search" style="width:300px" value="COUNTRY"></input>
+					  		<button>search</button>
+               	</a>					
+						<br>
+						<span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>
+					</form> 
+				</div>         
+         </div>
          
          <div class="span12" style="height: 60px;"></div>    
          <div id="best" class="span6 offset3 caption">

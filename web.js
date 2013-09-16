@@ -56,11 +56,12 @@ app.get('/', function(request, response) {
   champion[0][10]= '<strong>' + champion[0][10].toString() + '</strong>';
   
   var table_data= JSON.stringify(setNWP(champion));//send only first element
-  console.log(table_data);
+  //console.log(table_data);
   html= html.replace('CHART_DATA',chart_data);
   html= html.replace('TABLE_DATA',table_data);
   html= html.replace('CHAMPION',table_json[0][3]+', '+table_json[0][4]);//city and country 
-  html= html.replace('COUNTRY',table_json[0][4]);//country 
+  html= html.replace('COUNTRY',table_json[0][4]);//country
+  html= html.replace('CITY',table_json[0][3]);//city   
   html= html.replace('NUM_LOCATIONS',table_json.length);   
   response.send(html);
 });

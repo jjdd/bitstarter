@@ -126,6 +126,11 @@
      a {
      	text-decoration: none;
      }
+
+     .info {
+             text-align: right;
+     }     
+     
     </style>
     <!-- asynchronous google analytics. -->
     <script type="text/javascript">
@@ -299,19 +304,18 @@
          <div class="span12" style="height: 20px;"></div>
 
 			<div class="row-fluid">
-		   	<div class="alert alert-success span4">
-					<strong>Begin your search here</strong><br>
-					<span style="font-size:10px;">NUM_LOCATIONS stations have reported weather</span>	    
+		   	<div class="alert alert-success span3 offset1 info">
+					<strong>Begin your search here</strong><br>    
 		   	</div>
 
 				<div class="span8 offset">
 					<form  name="input" action="/" method="post">
 						<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
-					  		<input name="search" style="width:300px" value="COUNTRY"></input>
+					  		<input name="search" style="width:300px" value="CITY"></input>
 					  		<button>search</button>
                	</a>					
 						<br>
-						
+					   <span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>	
 					</form> 
 				</div>         
          </div>
@@ -325,8 +329,6 @@
             <img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img>
 			</div>	
       	<div id="table_div" class="span10 offset1 caption"></div>
-      	<div id="table_div" class="span1"></div>
-
       	<div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
 		</div>
 		

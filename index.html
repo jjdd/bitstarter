@@ -122,6 +122,7 @@
 	  .comment {
         text-align: right;
      }
+<<<<<<< HEAD
      
      a {
      	text-decoration: none;
@@ -132,6 +133,18 @@
      }     
      
     </style>
+=======
+
+     #chart_div {
+        padding: 0% 10%;
+        min-height:  300px;
+     }
+
+      .test {
+          border: 1px;
+        }
+   </style>
+>>>>>>> 5963e48eed7566afdd0585ba850b4a0f781440b6
     <!-- asynchronous google analytics. -->
     <script type="text/javascript">
 
@@ -201,6 +214,7 @@
      google.setOnLoadCallback(drawRegionsMap);
 
       function drawRegionsMap() {
+<<<<<<< HEAD
         var values= CHART_DATA;
         //alert(JSON.stringify(values));
         var data = google.visualization.arrayToDataTable(values);
@@ -212,6 +226,12 @@
         document.getElementById('chart_div').style.height= h.toString()+'px';
         
         //plot map         
+=======
+        var data = google.visualization.arrayToDataTable(CHART_DATA);
+
+        var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none'};
+
+>>>>>>> 5963e48eed7566afdd0585ba850b4a0f781440b6
         var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
         chart.draw(data, options);
         
@@ -263,7 +283,7 @@
     <!-- We use row-fluid inside containers to achieve a resizable layout. -->
     <!-- blogs.endjin.com/2013/04/tips-for-implementing-responsive-designs-using-bootstrap/ -->
     <!-- http://stackoverflow.com/a/12270322 -->
-    <div class="container">
+    <div class="container border">
       
 
       <!-- Font and paired font of .heading/.subheading and body from Google Fonts -->
@@ -301,8 +321,9 @@
       <div class="row-fluid">
       	<div id="chart_div" class="span12 caption" ></div>
 
-         <div class="span12" style="height: 20px;"></div>
+        <div class="span12" style="height: 20px;"></div>
 
+<<<<<<< HEAD
 			<div class="row-fluid">
 		   	<div class="alert alert-success span3 offset1 info">
 					<strong>Begin your search here</strong><br>    
@@ -410,6 +431,30 @@
       </div>		
 		
       <div class="span12" style="height: 60px;"></div>      
+=======
+		<div class="span12 caption">
+				<form  name="input" action="/" method="post">
+					<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
+					  <input name="search" style="width:300px"></input>
+					  <button>search</button>
+               </a>					
+					<br>
+					<span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>
+				</form> 
+		</div>         
+         
+        <div class="span12" style="height: 60px;"></div>    
+        <div class="span4 offset4 caption">
+		   <h3>CHAMPION</h3>
+           <p><em>"Best Weather in the World"</em></p>
+        </div>
+        <div class="span1"> <img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img></div>	
+        <div id="table_div" class="span10 offset1 caption"></div>
+        <div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
+        <div class="span12" style="height: 60px;"></div>
+      </div>
+
+>>>>>>> 5963e48eed7566afdd0585ba850b4a0f781440b6
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
       <!-- http://creativecommons.org/licenses/ -->
       <div class="row-fluid footer">

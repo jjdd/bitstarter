@@ -186,7 +186,13 @@
         pFormatter.format(data, 6+add);
         tFormatter.format(data, 7+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
-        table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false, width: 'automatic'});
+        table.draw(data, {showRowNumber: false,
+                          allowHtml: true,
+                          alternatingRowStyle: false,
+                          width: 'automatic',
+                          page: 'enabled',
+                          pageSize: 20,
+                          });
         
       }
     </script>

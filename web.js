@@ -274,7 +274,7 @@ app.get('/us', function(request, response) {
   		return x[4]=='United States';
   	});
 
-  var champion= [[table_json[0][0]].concat(table_json[0].slice(3))];//remove iata,icao by default
+  var champion= [[table_json[0][0]].concat(table_json[0].slice(3,13))];//remove iata,icao by default
   champion[0][9]=  '<strong>' + champion[0][9].toString() + '</strong>';//rankings    
   champion[0][10]= '<strong>' + champion[0][10].toString() + '</strong>';
   var city= champion[0][1].split(', ');

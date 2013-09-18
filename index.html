@@ -204,7 +204,7 @@
         var values= CHART_DATA;
         //alert(JSON.stringify(values));
         var data = google.visualization.arrayToDataTable(values);
-        var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none', width:'automatic'};
+        var options = {colorAxis: {colors: ['red','yellow', 'green'],minValue: 0, maxValue: 1000},legend: 'none', width:'automatic'};
         
         //set map size
         var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');

@@ -43,7 +43,8 @@ var getSelection= function(term,data){
 	var table_columns= {iata: false, icao: false};
 	var search_term= term.toLowerCase();
 	for (i in data){
-		var found= data[i].slice(1,5).reduce(function(previous,x){return previous || x.toLowerCase().search(search_term)>=0},false);
+		var search_columns= data[i].slice(1,5).concat(data[i].slice(13,14));// + region
+		var found= search_columns.reduce(function(previous,x){return previous || x.toLowerCase().search(search_term)>=0},false);
 		table_columns.iata= table_columns.iata || data[i][1].search(term)>=0;
 		table_columns.icao= table_columns.icao || data[i][2].search(term)>=0;
 		//console.log([term,found,data[i].slice(1,4)]);
@@ -169,11 +170,12 @@ app.post('/', function(request, response) {
 
   // remove the unused columns
   selected.data= selected.data.map(function(x){
+  			x= x.slice(0,13)
          x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
          x[12]= '<strong>' + x[12].toString() + '</strong>';
-  	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3,13));
-  	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2,13));
-  	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3,13));
+  	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
+  	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
+  	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
   	  		return x;  	  			
   });
   

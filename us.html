@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Weather-Rank - The Weather Ranking - "Google the nice weather"</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fbootstrap-combined.no-icons.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css">
+    <link rel="stylesheet" href="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fsocial-buttons.css">    
+    <script src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fjquery.js"></script>
+    <script src="https://d396qusza40orc.cloudfront.net/startup%2Fcode%2Fbootstrap.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+
+      /* Large desktop */
+      @media (min-width: 980px) { 
+        body {
+         padding-top: 60px;
+        }
+       .linediv-l {
+         border-right: 1px white solid;
+        }
+       .linediv-r {
+         border-left: 1px white solid;
+       }
+      
+        #chart_div {
+        padding: 0% 10%;
+        height:  100px;
+        }
+      
+      }
+
+      /* Landscape phones and down */
+      @media (max-width: 480px) { 
+       .copy {
+         padding: 2.5% 10%;
+       }
+       .linediv-l {
+         border-bottom: 1px white solid;
+       }
+       .linediv-r {
+         border-top: 1px white solid;
+       }
+ 
+        #chart_div {
+        padding: 0% 10%;
+        height:  100px;
+        }
+       
+      }
+
+      /* All form factors */
+
+      /* Main body and headings */
+      body{
+        font-family: 'Droid Serif',Helvetica, Arial, sans-serif;
+      }
+      .heading, .subheading {
+        font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+        text-align: center;
+      }
+      p.lead {
+        padding-top: 1.5%;
+        font-size: 24px;
+        line-height: 30px;
+      }
+      p {
+        font-size: 18px;
+        line-height: 24px;
+      }
+
+      p.comments {
+        padding-top: 5%;
+        line-height: 30px;
+      }
+
+      /* Video pitch and Action */
+      .pitch {
+        padding: 2.5% 0%;
+      }
+      .order {
+        padding: 2% 0%;
+      }
+      .actions {
+        background-color: #343434;
+        padding: 3% 0%;
+      }
+      .caption, .video, .thermometer, .order, .social, .statistics {
+        text-align: center;
+      }
+      .statistics h3, .statistics p {
+        color: white;
+      }
+
+      /* Marketing Copy and Footer */
+      .copy {
+        padding-top: 2.5%;
+        padding-bottom: 2.5%;
+        text-align: justify;
+      }
+      .asset {
+        padding: 2.5% 0%;
+      }
+      .footer {
+        color: #cccccc;
+        text-align: center;
+      }
+      .footer p {
+        font-size: 11px;
+      }
+      .footer a {
+        color: #ccccff;
+      }
+      /* http://support.addthis.com/customer/portal/questions/1136093-share-buttons-in-center-position */      
+      div.addthis_toolbox {
+        width:180px;
+        margin: 0 auto;
+     }
+
+	  .comment {
+        text-align: right;
+     }
+     
+     a {
+     	text-decoration: none;
+     }
+
+     .info {
+             text-align: right;
+     }     
+     
+    </style>
+    <!-- asynchronous google analytics. -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-43192501-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <!-- google table adapted from example -->
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string','Points');
+        data.addColumn('string', 'City');
+        data.addColumn('string', 'State'); 
+        data.addColumn({type:'string', label:'Weather'}); 
+        data.addColumn({type:'number', label:'Temp'}); 
+        data.addColumn({type:'number', label:'Wind'}); 
+        data.addColumn({type:'number', label:'Humi'}); 
+        data.addColumn({type:'number', label:'UTCI*'});         
+        data.addColumn({type:'string', label:'Time'});
+        data.addColumn({type:'string', label:'Country Rank'}); 
+        data.addColumn({type:'string', label:'World Rank'}); 
+
+        var values= TABLE_DATA;
+        for (i in values){
+            var d = new Date(values[i][8]);
+            var m = d.getMinutes();
+            if (m < 10) m = "0" + m;
+            values[i][8]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
+				   //values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
+        }
+
+        data.addRows(values);
+        //alert(JSON.stringify(values));
+
+        var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
+        var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
+        var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
+        //var Tformatter = new google.visualization.DateFormat({pattern: "h:mm a"});
+
+        //TFormatter.format(data, 4);
+        tFormatter.format(data, 4); // Apply formatter to 5th column
+        vFormatter.format(data, 5);
+        pFormatter.format(data, 6);
+        tFormatter.format(data, 7);
+        
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false, width:'automatic'});
+        
+      }
+    </script>
+
+    <!-- google geo-chart adapted from example -->
+    <script type='text/javascript'>
+     google.load('visualization', '1', {'packages': ['geochart']});
+     google.setOnLoadCallback(drawRegionsMap);
+
+      function drawRegionsMap() {
+        var values= CHART_DATA;
+        //alert(JSON.stringify(values));
+        var data = google.visualization.arrayToDataTable(values);
+        var options = {
+        		region: 'US',
+        		resolution: 'provinces',
+        		colorAxis: {colors: ['red','yellow', 'green'],minValue: 0, maxValue: 1000},
+        		legend: 'none',
+        		width:'automatic'
+        	};
+        
+        //set map size
+        var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
+        var h= Math.round(parseInt(w.split('p')[0])*3/4*347/556);
+        document.getElementById('chart_div').style.height= h.toString()+'px';
+        
+        //plot map         
+        var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+        
+        //listen mouse click   
+        google.visualization.events.addListener(chart, 'select', function(){
+         	var country= values[chart.getSelection()[0].row+1][0];
+         	var form = document.createElement("form");
+    			form.setAttribute("method", "post");
+    			form.setAttribute("action", "/");
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "search");
+            hiddenField.setAttribute("value", country);
+            form.appendChild(hiddenField);
+			   document.body.appendChild(form);
+    			form.submit();
+        });       
+      
+        	
+    };
+    </script>
+
+  </head>
+  <body>
+
+    <!-- Mobile-friendly navbar adapted from example. -->
+    <!-- http://twitter.github.io/bootstrap/examples/starter-template.html -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar"
+                  data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">Weather-Rank</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="#best">Best</a></li>
+              <li><a href="#FAQ">FAQ</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <!-- We use row-fluid inside containers to achieve a resizable layout. -->
+    <!-- blogs.endjin.com/2013/04/tips-for-implementing-responsive-designs-using-bootstrap/ -->
+    <!-- http://stackoverflow.com/a/12270322 -->
+    <div class="container">
+      
+
+      <!-- Font and paired font of .heading/.subheading and body from Google Fonts -->
+      <!-- www.google.com/fonts/specimen/Ubuntu -->
+      <!-- www.google.com/fonts/specimen/Ubuntu#pairings -->
+      <div class="row-fluid heading">
+        <div class="span12">
+          <h1>Weather-Rank</h1>
+        </div>
+      </div> 
+
+      <div class="row-fluid subheading">
+        <div class="span8 offset2">
+          <!-- Special typography from Bootstrap for lead paragraph. -->
+          <!-- http://twitter.github.io/bootstrap/base-css.html#typography -->
+          <p class="lead">The United States Weather Ranking.</p>
+        </div>
+        <div class="span2">
+
+            <!-- AddThis Button BEGIN -->
+            <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                <a class="addthis_button_preferred_1"></a>
+                <a class="addthis_button_preferred_2"></a>
+                <a class="addthis_button_compact"></a>
+                <a class="addthis_counter addthis_bubble_style"></a>
+            </div>
+            
+            <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
+            <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-520b493c24ad96b1"></script>
+            <!-- AddThis Button END -->
+
+        </div>
+      </div>
+
+      <div class="row-fluid">
+      	<div id="chart_div" class="span12 caption" ></div>
+
+         <div class="span12" style="height: 20px;"></div>
+
+			<div class="row-fluid">
+		   	<div class="alert alert-success span3 offset1 info">
+					<strong>Begin your search here</strong><br>    
+		   	</div>
+
+				<div class="span8 offset">
+					<form  name="input" action="/" method="post">
+						<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
+					  		<input name="search" style="width:300px" value="CITY"></input>
+					  		<button>search</button>
+               	</a>					
+						<br>
+					   <span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>	
+					</form> 
+				</div>         
+         </div>
+         <div class="row-fluid"> 
+         	<div class="span12" style="height: 60px;"></div>    
+         	<div id="best" class="span6 offset3 caption">
+					<h3>CHAMPION</h3>
+         		<p><em>"Best Weather in the United States"</em></p>
+         	</div>
+         	<div class="span2">
+            	<img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img>
+				</div>	
+      		<div id="table_div" class="span10 offset1 caption"></div>
+      		<div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
+			</div>
+		</div>
+		
+		<div class="span12" style="height: 60px;"></div>
+      
+      <div id="FAQ" class="row-fluid faq">
+          <div class="span10 offset1">
+            <h3>FAQ</h3>
+            <div class="accordion" id="accordion2">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion2" href="#collapseOne">
+                    What is a nice weather?
+                  </a>
+                </div>
+                <div id="collapseOne" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    This is a very subjective matter, it depends on your personal preferences or the activity you perform outdoors.
+                    Anyway, for the sake of ranking the weather conditions of different places, I have had to find a general definition of it.
+                    I consider that the optimum weather is the one with clear sky, no wind or a slight breeze, temperature in the range of thermal
+                    comfort (around 22&deg;C), some direct sunshine (but not too much) and relative humidity around 60%. 
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion2" href="#collapseTwo">
+                    How are the weather conditions ranked?
+                  </a>
+                </div>
+                <div id="collapseTwo" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    I assign points to the weather reported by meteorological stations around the world. The most close are its reported values
+                    (temperature, wind, cloud cover, etc.) to the optimum weather conditions, the most points the station gets. 
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion3" href="#collapse3">
+                    Where does data come from?
+                  </a>
+                </div>
+                <div id="collapse3" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    The web collects last available aeronautical meteorological reports (METAR) provided from airports or airfields around the world. These reports are
+                    used by pilots and air controllers in flight operations. There are other sources of meteorological data (other observations or
+                    computers' forecast outputs) but they are not so reliable or do not reflect actual conditions, as aeronautical reports do.
+                    Unfortunately, the density of airfields is not homogeneous in the world, there are more in areas such as United States
+                    or Europe, so this world ranking is quite <em>biased</em> (It is more likely that top weathers belong to the USA, for instance).
+                  </div>
+                </div>
+              </div>              
+              
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse"
+                     data-parent="#accordion4" href="#collapse4">
+                    Why did I create this web?
+                  </a>
+                </div>
+                <div id="collapse4" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                     <a href="http://www.linkedin.com/pub/juanjo-dom%C3%ADnguez-duarte/26/475/61a" data-if-linkable="modal-lock">I</a>
+                      have been doing the online  <a href="https://www.coursera.org/course/startup" data-if-linkable="modal-lock">
+                      Startup Engineering</a> course at Coursera. This web is a prototype for the course's alumni final project. In the future,
+                      I would like to provide a more comprehensive explanation about the web's data sources and the heuristic used to assign points to 
+                      the weather reports.
+                  </div>
+                </div>
+              </div>               
+              
+            </div>
+          </div>
+
+      </div>		
+		
+      <div class="span12" style="height: 60px;"></div>      
+      <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
+      <!-- http://creativecommons.org/licenses/ -->
+      <div class="row-fluid footer">
+        <div class="span8 offset2 caption">
+          <p>This work is licensed under
+            the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC
+              By-SA 3.0
+            </a></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-43192501-1', 'herokuapp.com');
+      ga('send', 'pageview');
+    </script>
+
+  </body>
+</html>

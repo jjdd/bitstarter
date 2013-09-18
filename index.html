@@ -157,21 +157,21 @@
         data.addColumn('string','Points');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
-        data.addColumn({type:'string', label:'Time'}); 
+        data.addColumn({type:'string', label:'Weather'}); 
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
         data.addColumn({type:'number', label:'UTCI*'});         
-        data.addColumn({type:'string', label:'Weather'});
+        data.addColumn({type:'string', label:'Time'});
         data.addColumn({type:'string', label:'Country Rank'}); 
         data.addColumn({type:'string', label:'World Rank'}); 
 
         var values= TABLE_DATA;
         for (i in values){
-            var d = new Date(values[i][3]);
+            var d = new Date(values[i][8]);
             var m = d.getMinutes();
             if (m < 10) m = "0" + m;
-            values[i][3]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
+            values[i][8]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
 				   //values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
         }
 
@@ -319,17 +319,18 @@
 					</form> 
 				</div>         
          </div>
-         
-         <div class="span12" style="height: 60px;"></div>    
-         <div id="best" class="span6 offset3 caption">
-				<h3>CHAMPION</h3>
-         	<p><em>"Best Weather in the World"</em></p>
-         </div>
-         <div class="span2">
-            <img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img>
-			</div>	
-      	<div id="table_div" class="span10 offset1 caption"></div>
-      	<div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
+         <div class="row-fluid"> 
+         	<div class="span12" style="height: 60px;"></div>    
+         	<div id="best" class="span6 offset3 caption">
+					<h3>CHAMPION</h3>
+         		<p><em>"Best Weather in the World"</em></p>
+         	</div>
+         	<div class="span2">
+            	<img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img>
+				</div>	
+      		<div id="table_div" class="span10 offset1 caption"></div>
+      		<div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
+			</div>
 		</div>
 		
 		<div class="span12" style="height: 60px;"></div>

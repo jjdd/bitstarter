@@ -152,7 +152,7 @@
         if (column.iata) add+=1;
         if (column.icao) add+=1;       
        
-        var iTime= 3+add;
+        var iTime= 8+add;
         for (i in values){
             var d = new Date(values[i][iTime]);
             var m = d.getMinutes();
@@ -166,12 +166,12 @@
         if (column.icao) data.addColumn('string', 'ICAO');
         data.addColumn('string', 'City');
         data.addColumn('string', 'Country'); 
-        data.addColumn({type:'string', label:'Time'});
+        data.addColumn({type:'string', label:'Weather'});
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
         data.addColumn({type:'number', label:'UTCI*'});         
-        data.addColumn({type:'string', label:'Weather'});
+        data.addColumn({type:'string', label:'Time'});
         data.addColumn({type:'string', label:'Country Rank'}); 
         data.addColumn({type:'string', label:'World Rank'}); 
         data.addRows(values);

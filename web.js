@@ -25,6 +25,12 @@ var setNWP= function(data){
 	return data;
 	};
 
+var removeTags= function(term){
+	term= term.replace(/<[^>]+>/g, '');
+	return term;
+};
+
+
 var collapseSpaces= function(term){
 	term= term.replace(/\s+/g, ' ');
   	term= term.replace(/\s+$/g, '');
@@ -50,7 +56,7 @@ app.get('/', function(request, response) {
   var html= fs.readFileSync('index.html').toString();
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
-  var champion= [[table_json[0][0]].concat(table_json[0].slice(3))];//remove iata,icao by default
+  var champion= [[table_json[0][0]].concat(table_json[0].slice(3,13))];//remove iata,icao by default
   //champion[0][3]= new Date(champion[0][3]);//TIME
   champion[0][9]= '<strong>' + champion[0][9].toString() + '</strong>';//rankings    
   champion[0][10]= '<strong>' + champion[0][10].toString() + '</strong>';
@@ -89,6 +95,7 @@ app.post('/', function(request, response) {
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
   var countries= JSON.parse(fs.readFileSync('countries.json').toString()); 
   var airports= JSON.parse(fs.readFileSync('airports.json').toString());
+  var regions= JSON.parse(fs.readFileSync('regions.json').toString());
 
   //collapse spaces, heading and trailing 
   var search_term= collapseSpaces(request.body.search)
@@ -98,8 +105,10 @@ app.post('/', function(request, response) {
      
   //add country chart if term is an unique country
   var c_data= [];
+  var country_data= [];
   var country_code= '';
   var country_disp= 'false';
+  var resolution= 'countries';
   var sel_countries= [];
   var cterm= search_term.toLowerCase();
   for (coc in countries) {
@@ -111,8 +120,8 @@ app.post('/', function(request, response) {
   	  
      //c_data= selected.data.filter(function(x){return x[4]!=countries[sel_countries[0]]}); 
      c_data= selected.data.map(function(x){
-       var city= x[3]+' '+x[1];//city + IATA
-       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city= x[3]+' '+x[2];
+       var city= removeTags(x[3].split(',')[0])+' '+removeTags(x[1]);//city + IATA
+       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  removeTags(x[3].split(',')[0])+' '+removeTags(x[2]);
        lat= airports[x[2]][0]
        lon= airports[x[2]][1]
        return [lat,lon,city,x[0]];//city + ICAO
@@ -122,16 +131,49 @@ app.post('/', function(request, response) {
      sel_cod= sel_countries.reduce(function(x,y){
      	 if(countries[x].length<countries[y].length) return x; else return y;
      	},sel_countries[0]); 
-     country_code= sel_cod;//sel_countries[0];  
+     country_code= sel_cod; 
   };
+  
+  if (country_disp==='false'){
+
+  //add United States Region chart if term is an unique Region
+  var r_data= [];
+  var sel_regions= [];
+  for (reg in regions) {
+     if (regions[reg].toLowerCase().search(cterm)>=0){
+       sel_regions.push(reg);
+     };
+  };  
+  if(sel_regions.length==1 || sel_regions.length==2){
+  	  
+     r_data= selected.data.map(function(x){
+       var city= removeTags(x[3].split(',')[0])+' '+removeTags(x[1]);//city + IATA
+       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  removeTags(x[3].split(',')[0])+' '+removeTags(x[2]);
+       lat= airports[x[2]][0]
+       lon= airports[x[2]][1]
+       return [lat,lon,city,x[0]];//city + ICAO
+    });
+     country_data= JSON.stringify([['Lat','Lon','City','Points']].concat(r_data));
+     country_disp= 'true';
+     sel_cod= sel_regions.reduce(function(x,y){
+     	 if(regions[x].length<regions[y].length) return x; else return y;
+     	},sel_regions[0]); 
+     country_code= 'US-'+sel_cod;
+     resolution= 'provinces';
+  };
+
+	console.log(JSON.stringify(sel_regions));
+	};
+
+
 
   // remove the unused columns
   selected.data= selected.data.map(function(x){
          x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
          x[12]= '<strong>' + x[12].toString() + '</strong>';
-  	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
-  	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
-  	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
+  	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3,13));
+  	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2,13));
+  	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3,13));
   	  		return x;  	  			
   });
   
@@ -144,6 +186,7 @@ app.post('/', function(request, response) {
   html= html.replace('COUNTRY_DATA',country_data);
   html= html.replace('COUNTRY_CODE',country_code);
   html= html.replace('COUNTRY_DISP',country_disp);
+  html= html.replace('RESOLUTION',resolution);
   response.send(html);  
 });
 
@@ -207,7 +250,50 @@ app.get('/set_chart', function(request, response) {
     response.pipe(file4);
   });
 
+  var options5 = {
+    host: 'www.locusamoenus.eu',
+    port: 80,
+    path: '/us_chart.json'
+  };
+  var file5 = fs.createWriteStream("us_chart.json");
+  http.get(options5, function(response) {
+    response.pipe(file5);
+  });
+
 });
+
+app.get('/us', function(request, response) {
+  var html= fs.readFileSync('us.html').toString();
+  var chart_data= fs.readFileSync('us_chart.json').toString();
+  var table_json= JSON.parse(fs.readFileSync('table.json').toString());
+  var regions= JSON.parse(fs.readFileSync('regions.json').toString()); 
+
+  table_json= table_json.filter(function(x){
+  		return x[4]=='United States';
+  	});
+
+  var champion= [[table_json[0][0]].concat(table_json[0].slice(3))];//remove iata,icao by default
+  champion[0][9]=  '<strong>' + champion[0][9].toString() + '</strong>';//rankings    
+  champion[0][10]= '<strong>' + champion[0][10].toString() + '</strong>';
+  var city= champion[0][1].split(', ');
+  champion[0][1]= city[0];  
+  var region= regions[city[1]];
+  champion[0][2]= region;  
+  var table_data= JSON.stringify(setNWP(champion));//send only first element
+  
+
+  
+  //console.log(table_data);
+  html= html.replace('CHART_DATA',chart_data);
+  html= html.replace('TABLE_DATA',table_data);
+  html= html.replace('CHAMPION',city[0]+', '+region);//city and State
+  html= html.replace('STATE',region);
+  html= html.replace('CITY',city[0]);//city   
+  html= html.replace('NUM_LOCATIONS',table_json.length);   
+  response.send(html);
+});
+
+
 
 var port = process.env.PORT || 8000;
 app.listen(port, function() {

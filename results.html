@@ -216,7 +216,8 @@
         			region:      'COUNTRY_CODE',
         			displayMode: 'markers',
         			colorAxis:   {minValue: 0, maxValue: 1000, colors: ['red','yellow', 'green']},
-        			legend: 'none'};
+        			legend: 'none',
+        			resolution: 'RESOLUTION'};
 
             var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
       	   chart.draw(data, options);

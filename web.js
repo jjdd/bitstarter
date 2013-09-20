@@ -118,7 +118,7 @@ app.post('/', function(request, response) {
        sel_countries.push(coc);
      };
   };  
-  if(sel_countries.length==1 || sel_countries.length==2){
+  if(selected.data.length>0 && (sel_countries.length==1 || sel_countries.length==2)){
   	  
      //c_data= selected.data.filter(function(x){return x[4]!=countries[sel_countries[0]]}); 
      c_data= selected.data.map(function(x){
@@ -137,7 +137,7 @@ app.post('/', function(request, response) {
      country_code= sel_cod; 
   };
   
-  if (country_disp==='false'){
+  if (selected.data.length>0 && country_disp==='false'){
 
   //add United States Region chart if term is an unique Region
   var r_data= [];
@@ -165,7 +165,7 @@ app.post('/', function(request, response) {
      resolution= 'provinces';
   };
 
-	console.log(JSON.stringify(sel_regions));
+	//console.log(JSON.stringify(sel_regions));
 	};
 
 

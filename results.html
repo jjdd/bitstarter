@@ -242,7 +242,10 @@
           <a class="brand" href="/">Weather-Rank</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
+              <li><a href="/">World</a></li>            
               <li><a href="/us">USA</a></li>
+              <li><a href="/eu">Europe</a></li>    
+              <li class="active"><a href="#results">"SEARCH_TERM" results</a></li>    
               <li><a href="#about">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -270,11 +273,12 @@
          </div>
          
          <div id="chart_div" class="span12 caption;"  ></div>
-               
+      </div>
+      <div id="results" class="row-fluid">     
          <div class="span10 offset1 caption">
-			   <span style="font-size:12x;color:grey;">NUM_LOCATIONS results</span>  
-      	   <div id="table_div"></div>
-      	   <span style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</span> 
+			<p style="font-size:12px;color:grey;">NUM_LOCATIONS results</p>  
+			<div id="table_div"></div>
+			<span style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</span> 
          </div>  
       </div>
 

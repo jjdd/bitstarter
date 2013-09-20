@@ -156,7 +156,7 @@
         var data = new google.visualization.DataTable();
         data.addColumn('string','Points');
         data.addColumn('string', 'City');
-        data.addColumn('string', 'State'); 
+        data.addColumn('string', 'Country'); 
         data.addColumn({type:'string', label:'Weather'}); 
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
@@ -172,18 +172,16 @@
             var m = d.getMinutes();
             if (m < 10) m = "0" + m;
             values[i][8]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
-				   //values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
+			//values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
         }
 
         data.addRows(values);
-        //alert(JSON.stringify(values));
+
 
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-        //var Tformatter = new google.visualization.DateFormat({pattern: "h:mm a"});
 
-        //TFormatter.format(data, 4);
         tFormatter.format(data, 4); // Apply formatter to 5th column
         vFormatter.format(data, 5);
         pFormatter.format(data, 6);
@@ -205,8 +203,7 @@
         //alert(JSON.stringify(values));
         var data = google.visualization.arrayToDataTable(values);
         var options = {
-        		region: 'US',
-        		resolution: 'provinces',
+        		region: '150',
         		colorAxis: {colors: ['red','yellow', 'green'],minValue: 0, maxValue: 1000},
         		legend: 'none',
         		width:'automatic'
@@ -256,10 +253,10 @@
           </button>
           <a class="brand" href="/">Weather-Rank</a>
           <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li><a href="/">World</a></li>            
-              <li class="active"><a href="/us">USA</a></li>
-              <li><a href="/eu">Europe</a></li>             
+            <ul class="nav">           
+              <li><a href="/">World</a></li>
+              <li><a href="/us">USA</a></li>
+              <li class="active"><a href="/eu">Europe</a></li>                
               <li><a href="#top10">Top 10</a></li>
               <li><a href="#FAQ">FAQ</a></li>
             </ul>
@@ -287,7 +284,7 @@
         <div class="span8 offset2">
           <!-- Special typography from Bootstrap for lead paragraph. -->
           <!-- http://twitter.github.io/bootstrap/base-css.html#typography -->
-          <p class="lead">United States' Weather Ranking.</p>
+          <p class="lead">Europe's Weather Ranking.</p>
         </div>
         <div class="span2">
 
@@ -323,15 +320,15 @@
 					  		<button>search</button>
                	</a>					
 						<br>
-					   <span style="font-size:10px;color:grey">NUM_LOCATIONS stations from USA have reported weather</span>	
+					   <span style="font-size:10px;color:grey">NUM_LOCATIONS stations from Europe have reported weather</span>	
 					</form> 
 				</div>         
          </div>
          <div id="top10" class="row-fluid"> 
          	<div class="span12" style="height: 60px;"></div>    
-         	<div  class="span6 offset3 caption">
+         	<div class="span6 offset3 caption">
 					<h3>CHAMPION</h3>
-         		<p><em>"Best Weather in the United States"</em></p>
+         		<p><em>"Best Weather in Europe"</em></p>
          	</div>
          	<div class="span2">
             	<img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img>

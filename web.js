@@ -437,7 +437,7 @@ app.all('/icao/*', function (req, res) {
 	html= html.replace(/WRAN/g,row[12]);
 	
 	var name= '';
-	if (air[icao][1]!==row[3]) name= '<p class="lead">'+air[icao][1]+'</p>';
+	if (air[icao][1]!==row[3]) name= '<h2>'+air[icao][1]+'</h2>';
 	html= html.replace(/NAME/g,name);
 	
 	html= html.replace(/LATI/g,air[icao][6]);

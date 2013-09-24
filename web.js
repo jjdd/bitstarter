@@ -437,7 +437,7 @@ app.all('/icao/*', function (req, res) {
 	html= html.replace(/WRAN/g,row[12]);
 	
 	var name= '';
-	if (air[icao][1]!==row[3]) name= '<h2>'+air[icao][1]+'</h2>';
+	if (collapseSpaces(air[icao][1])!==collapseSpaces(row[3])) name= '<h3>('+collapseSpaces(air[icao][1])+')</h3>';
 	html= html.replace(/NAME/g,name);
 	
 	html= html.replace(/LATI/g,air[icao][6]);

@@ -166,7 +166,7 @@
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
-        data.addColumn({type:'number', label:'UTCI*'});         
+        data.addColumn({type:'string', label:'UTCI*'});         
         data.addColumn({type:'string', label:'Time'});
         data.addColumn({type:'string', label:'Country Rank'}); 
         data.addColumn({type:'string', label:'World Rank'}); 
@@ -186,11 +186,9 @@
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-
         tFormatter.format(data, 4); // Apply formatter to 5th column
         vFormatter.format(data, 5);
         pFormatter.format(data, 6);
-        tFormatter.format(data, 7);
         
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false, allowHtml: true, alternatingRowStyle: false, width:'automatic'});

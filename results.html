@@ -175,7 +175,7 @@
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
-        data.addColumn({type:'number', label:'UTCI*'});         
+        data.addColumn({type:'string', label:'UTCI*'});         
         data.addColumn({type:'string', label:'Time'});
         data.addColumn({type:'string', label:'Country Rank'}); 
         data.addColumn({type:'string', label:'World Rank'}); 
@@ -189,7 +189,6 @@
         tFormatter.format(data, 4+add); // Apply formatter to 5th column
         vFormatter.format(data, 5+add);
         pFormatter.format(data, 6+add);
-        tFormatter.format(data, 7+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false,
                           allowHtml: true,
@@ -221,10 +220,6 @@
         			region:      'COUNTRY_CODE',
         			displayMode: 'markers',
         			colorAxis:  {
-        	        	//values: [-100     ,-40      ,-33      ,-20      ,-6       ,5        ,13       ,27       ,29       ,34       ,42       ,46       ,100],
-        	        	//colors: ['#000080','#000080','#0000C0','#0000FF','#0060FF','#00C0FF','#00C000','#00C000','#FF6600','#FF3300','#CC0000','#800000','#800000']},
-        			    //values: [-40      ,-33      ,-20      ,-6       ,5        ,22       ,29       ,34       ,42       ,46],
-        				//colors: ['#5050A0','#5050E0','#5050FF','#50B0FF','#50F0FF','#00C000','#FFB650','#FF8350','#EC5050','#A05050']},
         			    values: [-40   ,0        ,22     ,36      ,46],
         				colors: ["indigo",'cyan','green','yellow','red']},
         				legend: {numberFormat:'.##&deg;C'},

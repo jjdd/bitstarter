@@ -9,6 +9,31 @@ var chart_json;
 //used for json parsing
 app.use(express.bodyParser());
 
+
+var utci_values= [-40   ,0        ,22     ,36      ,46];
+var utci_colors= ['indigo','cyan','green','yellow','red'];
+var utci_matrix= [[75,0,130],[0,255,255],[0,128,0],[255,255,0],[255,0,0]];
+
+var UTCIColor= function(u){
+	if (u<=-40) return "rgb(75,0,130)";
+	if (u>= 46) return "rgb(255,0,0)";
+	var i= utci_values.reduce(function(x,y){if (y>u) return x; else return x+1;},-1);
+	r0= utci_matrix[i][0];
+	g0= utci_matrix[i][1];
+	b0= utci_matrix[i][2];
+	r1= utci_matrix[i+1][0];
+	g1= utci_matrix[i+1][1];
+	b1= utci_matrix[i+1][2];
+	u0= utci_values[i];
+	u1= utci_values[i+1];
+	r= r0 + Math.round((r1-r0)*(u-u0)/(u1-u0));
+	g= g0 + Math.round((g1-g0)*(u-u0)/(u1-u0));
+	b= b0 + Math.round((b1-b0)*(u-u0)/(u1-u0));
+	return "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";
+};
+
+var UTCIStyle= function(utci){return "<strong class='caption' style='color:" + UTCIColor(utci) + "'>" + utci.toString() + "&deg;C </strong>";};
+
 var NWPColor= function(nwp){
 	if(nwp>500){
 		//  y0 +            (y1 - y0)*(x  - x0)/dx 
@@ -25,27 +50,8 @@ var NWPColor= function(nwp){
 	return "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";	 
 };
 
-/*
-var NWPColor= function(nwp){
-	var maxval= 128;	
-	var yellowFact= maxval*(500-Math.abs(nwp-500))/500;
-	var red= Math.round((1000-nwp)/1000*maxval+yellowFact);
-	var green= Math.round(nwp/1000*maxval+yellowFact);
-	return "rgb("+red.toString()+","+green.toString()+",50)";	 
-	};
-*/
+var NWPStyle= function(nwp){return "<strong class='caption' style='color:" + NWPColor(nwp) + "'>" + nwp.toString() + "</strong>";};
 
-var NWPStyle= function(nwp){return "<strong class='caption' style='color:" + NWPColor(nwp) + "'>" + nwp.toString() + "</strong>"};
-
-/*
-var NWPStyle= function(nwp){
-   var maxval= 128;	
-   var yellowFact= maxval*(500-Math.abs(nwp-500))/500;
-	var red= Math.round((1000-nwp)/1000*maxval+yellowFact);
-	var green= Math.round(nwp/1000*maxval+yellowFact);
-	return "<strong class='caption' style='color: rgb("+red.toString()+","+green.toString()+",50)'>"+ nwp.toString() + "</strong>";	 
-};
-*/
 
 var setNWP= function(data){
 	for (i in data){
@@ -92,6 +98,7 @@ app.get('/', function(request, response)
   var champion= table_json.slice(0,10).map(function(x){
 	  x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
 	  x[4]=  '<a href="/'+air[x[2]][10]+'">' + x[4] + '</a>';
+	  x[9]= UTCIStyle(x[9]);
 	  x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings    
 	  x[12]= '<strong>' + x[12].toString() + '</strong>';		  
 	  return [x[0]].concat(x.slice(3,13));
@@ -209,7 +216,8 @@ app.post('/', function(request, response) {
   		x= x.slice(0,13);
         var icao= removeTags(x[2]);
   		x[3]=  '<a href="/icao/'+icao+'">' + x[3] + '</a>';
-  		x[4]=  '<a href="/'+air[icao][10]+'">' + x[4] + '</a>';  		
+  		x[4]=  '<a href="/'+air[icao][10]+'">' + x[4] + '</a>';
+  	    x[9]= UTCIStyle(x[9]);
         x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
         x[12]= '<strong>' + x[12].toString() + '</strong>';
   	  	if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
@@ -341,7 +349,7 @@ app.get('/us', function(request, response) {
 	  
 	  x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
 	  x[4]=  '<a href="/us/'+air[x[2]][9]+'">' + x[4] + '</a>';
-	  
+	  x[9]= UTCIStyle(x[9]);
 	  x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings    
 	  x[12]= '<strong>' + x[12].toString() + '</strong>';		  
 	  return [x[0]].concat(x.slice(3,13));
@@ -386,6 +394,7 @@ app.get('/eu', function(request, response) {
 	  var champion= table_json.slice(0,10).map(function(x){
 		  x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
 		  x[4]=  '<a href="/'+air[x[2]][10]+'">' + x[4] + '</a>';
+		  x[9]= UTCIStyle(x[9]);
 		  x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings    
 		  x[12]= '<strong>' + x[12].toString() + '</strong>';		  
 		  return [x[0]].concat(x.slice(3,13));
@@ -422,14 +431,17 @@ app.all('/icao/*', function (req, res) {
 	html= html.replace(/TEMP/g,row[6]);
 	html= html.replace(/WIND/g,Math.round(row[7],1));
 	html= html.replace(/HUMI/g,row[8]);
-	html= html.replace(/UTCI/g,row[9]);
+	html= html.replace(/UTCI/g,UTCIStyle(row[9]));
 	html= html.replace(/TIME/g,row[10]);
 	html= html.replace(/CRAN/g,row[11]);
 	html= html.replace(/WRAN/g,row[12]);
 	
 	var name= '';
-	if (!air[icao][1]===row[3]) name= '<p class="lead">'+air[icao][1]+'</p>';
+	if (air[icao][1]!==row[3]) name= '<p class="lead">'+air[icao][1]+'</p>';
 	html= html.replace(/NAME/g,name);
+	
+	html= html.replace(/LATI/g,air[icao][6]);
+	html= html.replace(/LONG/g,air[icao][5]);	
 	
 	var badge= '<span class="badge" style="background-color:'+NWPColor(row[0]) +'; font-size: 36px; height: 40px;line-height: 36px">'+row[0]+'</span>';
 	html= html.replace(/BADGE/g,badge);	
@@ -462,7 +474,7 @@ app.all('/us/*', function(req, res) {
 	       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  x[3].split(',')[0]+' '+x[2];
 	       lat= airports[x[2]][0];
 	       lon= airports[x[2]][1];
-	       return [lat,lon,city,x[9],x[0]];//city + ICAO
+	       return [lat,lon,{v:x[2],f:city},x[9],x[0]];//city + ICAO
 	    });
 	  var country_data= JSON.stringify([['Lat','Lon','City','UTCI','Points'],[0.0,0.0,'',0,0],[0.0,0.0,'',0,1000]].concat(c_data));
 	 
@@ -470,6 +482,7 @@ app.all('/us/*', function(req, res) {
 	  selected.data= selected.data.map(function(x){
 	  		x= x.slice(0,13);
 	  		x[3]=  '<a href="/icao/'+x[2]+'">' + x[3].split(',')[0] + '</a>';
+	  	    x[9]= UTCIStyle(x[9]);
 	        x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
 	        x[12]= '<strong>' + x[12].toString() + '</strong>';
 	  	    
@@ -524,7 +537,7 @@ app.all('/*', function (req, res) {
 	       var icao= x[2];
 	       lat= airports[icao][0];
 	       lon= airports[icao][1];
-	       return [lat,lon,city,Math.round(x[9]),x[0]];
+	       return [lat,lon,{v:x[2],f:city},Math.round(x[9]),x[0]];
 	    });
 	  var country_data= JSON.stringify([['Lat','Lon','City','UTCI','Points'],[0.0,0.0,'',0,0],[0.0,0.0,'',0,1000]].concat(c_data));
 
@@ -532,7 +545,8 @@ app.all('/*', function (req, res) {
 	  selected.data= selected.data.map(function(x){
 	  			x= x.slice(0,13);
 		  		x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
-	            x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
+		  	    x[9]= UTCIStyle(x[9]);
+		  		x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
 	            x[12]= '<strong>' + x[12].toString() + '</strong>';
 		        //country es redundante
 		        x= x.slice(0,4).concat(x.slice(5));

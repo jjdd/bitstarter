@@ -173,7 +173,7 @@
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
         data.addColumn({type:'number', label:'Humi'}); 
-        data.addColumn({type:'number', label:'UTCI*'});         
+        data.addColumn({type:'string', label:'UTCI*'});         
         data.addColumn({type:'string', label:'Time'});
         data.addColumn({type:'string', label:'Country Rank'}); 
         data.addColumn({type:'string', label:'World Rank'}); 
@@ -182,12 +182,10 @@
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-
-        
         tFormatter.format(data, 3+add); // Apply formatter to 5th column
         vFormatter.format(data, 4+add);
         pFormatter.format(data, 5+add);
-        tFormatter.format(data, 6+add);
+        
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false,
                           allowHtml: true,
@@ -224,6 +222,17 @@
         			resolution: 'RESOLUTION'};
             var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
       	   chart.draw(data, options);
+      	   
+           //listen mouse click   
+           google.visualization.events.addListener(chart, 'select', function(){
+            	var icao= values[chart.getSelection()[0].row+1][2].v;
+            	var form= document.createElement("form");
+   			form.setAttribute("method", "get");
+            form.setAttribute("action", "/icao/"+icao);
+   			document.body.appendChild(form);
+       		form.submit();
+           });
+      	   
       	}
     </script>    
   </head>

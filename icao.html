@@ -74,8 +74,7 @@
       .actions {
         background-color: #343434;
       }
-
-     
+      
       .caption, .video, .thermometer, .order, .social, .statistics {
         text-align: center;
       }
@@ -121,10 +120,6 @@
      #table_div {
         padding: 0% 0%;
      }   
-
-     #table_div a{
-        color: black;
-     }   
         
       a {
      	text-decoration: none;
@@ -143,101 +138,19 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-
-    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
-    <!-- google table adapted from example -->
-    <script type='text/javascript'>
-      google.load('visualization', '1', {packages:['table']});
-      google.setOnLoadCallback(drawTable);
-      function drawTable() {
-        var column= TABLE_COLUMNS;
-        var values= TABLE_DATA;     
-       
-        var add=0;
-        if (column.iata) add+=1;
-        if (column.icao) add+=1;       
-       
-        var iTime= 8+add;
-        for (i in values){
-            var d = new Date(values[i][iTime]);
-            var m = d.getMinutes();
-            if (m < 10) m = "0" + m;
-            values[i][iTime]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
-        }
-
-        var data = new google.visualization.DataTable();
-        data.addColumn('string','Points');
-        if (column.iata) data.addColumn('string', 'IATA');
-        if (column.icao) data.addColumn('string', 'ICAO');
-        data.addColumn('string', 'City');
-        data.addColumn('string', 'Country'); 
-        data.addColumn({type:'string', label:'Weather'});
-        data.addColumn({type:'number', label:'Temp'}); 
-        data.addColumn({type:'number', label:'Wind'}); 
-        data.addColumn({type:'number', label:'Humi'}); 
-        data.addColumn({type:'number', label:'UTCI*'});         
-        data.addColumn({type:'string', label:'Time'});
-        data.addColumn({type:'string', label:'Country Rank'}); 
-        data.addColumn({type:'string', label:'World Rank'}); 
-        data.addRows(values);
-
-        var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
-        var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
-        var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-
-        
-        tFormatter.format(data, 4+add); // Apply formatter to 5th column
-        vFormatter.format(data, 5+add);
-        pFormatter.format(data, 6+add);
-        tFormatter.format(data, 7+add);
-        var table = new google.visualization.Table(document.getElementById('table_div'));
-        table.draw(data, {showRowNumber: false,
-                          allowHtml: true,
-                          alternatingRowStyle: false,
-                          width: 'automatic'//,
-                          //page: 'enabled',
-                          //pageSize: 20,
-                          });
-        
-      }
-    </script>
     
-    <!-- google geo-chart country -->    
-    <script type='text/javascript'>
-      	google.load('visualization', '1', {'packages': ['geochart']});
-      	google.setOnLoadCallback(drawMarkersMap);
-
-      	function drawMarkersMap(){
-
-    	if(COUNTRY_DISP){
-            var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
-            var h= Math.round(parseInt(w.split('p')[0])*347/556);
-            document.getElementById('chart_div').style.height= h.toString()+'px';
-
-      		var values = COUNTRY_DATA;
-      		var data   = google.visualization.arrayToDataTable(values);
-
-      		var options = {
-        			region:      'COUNTRY_CODE',
-        			displayMode: 'markers',
-        			colorAxis:  {
-        	        	//values: [-100     ,-40      ,-33      ,-20      ,-6       ,5        ,13       ,27       ,29       ,34       ,42       ,46       ,100],
-        	        	//colors: ['#000080','#000080','#0000C0','#0000FF','#0060FF','#00C0FF','#00C000','#00C000','#FF6600','#FF3300','#CC0000','#800000','#800000']},
-        			    //values: [-40      ,-33      ,-20      ,-6       ,5        ,22       ,29       ,34       ,42       ,46],
-        				//colors: ['#5050A0','#5050E0','#5050FF','#50B0FF','#50F0FF','#00C000','#FFB650','#FF8350','#EC5050','#A05050']},
-        			    values: [-40   ,0        ,22     ,36      ,46],
-        				colors: ["indigo",'cyan','green','yellow','red']},
-        				legend: {numberFormat:'.##&deg;C'},
-        			resolution: 'RESOLUTION'};
-
-            var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
-      	   chart.draw(data, options);
-      	 };
-      	 
-      	}
-    </script>    
-  </head>
-  <body>
+    <script type="text/javascript">
+    function setTime(){
+       var d = new Date("TIME");
+       var m = d.getMinutes();
+       if (m < 10) m = "0" + m;
+       var e= document.getElementById('time');
+       e.innerHTML= d.toString();
+    }
+    </script>  
+    
+    </head>
+  <body  onload="setTime();">
 
     <!-- Mobile-friendly navbar adapted from example. -->
     <!-- http://twitter.github.io/bootstrap/examples/starter-template.html -->
@@ -256,7 +169,7 @@
               <li><a href="/">World</a></li>            
               <li><a href="/us">USA</a></li>
               <li><a href="/eu">Europe</a></li>    
-              <li class="active"><a href="#results">"SEARCH_TERM" results</a></li>    
+              <li class="active"><a href="#results">CITY</a></li>    
               <li><a href="#about">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -268,34 +181,41 @@
     <!-- blogs.endjin.com/2013/04/tips-for-implementing-responsive-designs-using-bootstrap/ -->
     <!-- http://stackoverflow.com/a/12270322 -->
     <div class="container">
+
+      <div class="row-fluid heading">
+        <div class="span12">
+          <h1> BADGE CITY, COUN WEAT</h1>
+        </div>
+      </div> 
+
+      <div class="row-fluid subheading">
+        <div class="span8 offset2">
+          NAME
+          <p class="lead"><strong>CRAN</strong> in COUN's ranking, <strong>WRAN</strong> in World ranking</p>
+        </div>
+
+        <div class="span2">
+        </div>
+
+      </div>
       
       <div class="row-fluid">
 
-			<div class="span12 caption">
-			
-				<form name="input" action="/" method="post">
-				<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
-				<label style="font-size:20px;">Weather-Rank
-				   <input name="search" style="width:300px" value="SEARCH_TERM"></input>
-					<button>search</button>
-				</label>
-				</a>
-				</form> 
-         </div>
-         
-         <div id="chart_div" class="span12 caption;"  ></div>
-      </div>
-      <div id="results" class="row-fluid">     
-         <div class="span10 offset1 caption">
-			<p style="font-size:12px;color:grey;">NUM_LOCATIONS results</p>  
-			<div id="table_div"></div>
-			<span style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</span> 
-         </div>  
-      </div>
+        <div class="span12" style="height: 30px;"></div>
 
-      <div class="span12" style="min-height: 30px;"></div>
+	  	<div class="span12 caption">
+	  		<p>Nice weather points: POIN</p>
+	  		<p>Temperature: TEMP&deg;C</p>
+	  		<p>Wind: WINDm/s</p>
+	  		<p>Humidity: HUMI%</p>
+	  		<p>U.T.C.I: UTCI&deg;C</p>
+	  		<p>Weather: DESC</p>
+	  		<p><em id="time"></em></p>
+	  	</div>
 
-      <div id="about" class="span4 offset4 actions statistics">
+        <div class="span12" style="height: 30px;"></div>
+
+        <div id="about" class="span4 offset4 actions statistics">
           <h3>Do you like this?</h3>
           <p class="comments">This prototype is <a href="http://www.linkedin.com/pub/juanjo-dom%C3%ADnguez-duarte/26/475/61a" data-if-linkable="modal-lock">my</a> final project of the course <a href="https://www.coursera.org/course/startup" data-if-linkable="modal-lock">
         Startup Engineering</a> at Coursera. Please help me spread the word:</p>
@@ -334,6 +254,8 @@
       </div>
 
       <div class="span12" style="min-height: 30px;"></div>
+      
+      </div>
       
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
       <!-- http://creativecommons.org/licenses/ -->

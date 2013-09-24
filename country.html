@@ -74,8 +74,7 @@
       .actions {
         background-color: #343434;
       }
-
-     
+      
       .caption, .video, .thermometer, .order, .social, .statistics {
         text-align: center;
       }
@@ -121,11 +120,11 @@
      #table_div {
         padding: 0% 0%;
      }   
-
+        
      #table_div a{
         color: black;
      }   
-        
+                
       a {
      	text-decoration: none;
      }
@@ -157,7 +156,7 @@
         if (column.iata) add+=1;
         if (column.icao) add+=1;       
        
-        var iTime= 8+add;
+        var iTime= 7+add;
         for (i in values){
             var d = new Date(values[i][iTime]);
             var m = d.getMinutes();
@@ -170,7 +169,6 @@
         if (column.iata) data.addColumn('string', 'IATA');
         if (column.icao) data.addColumn('string', 'ICAO');
         data.addColumn('string', 'City');
-        data.addColumn('string', 'Country'); 
         data.addColumn({type:'string', label:'Weather'});
         data.addColumn({type:'number', label:'Temp'}); 
         data.addColumn({type:'number', label:'Wind'}); 
@@ -186,10 +184,10 @@
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
 
         
-        tFormatter.format(data, 4+add); // Apply formatter to 5th column
-        vFormatter.format(data, 5+add);
-        pFormatter.format(data, 6+add);
-        tFormatter.format(data, 7+add);
+        tFormatter.format(data, 3+add); // Apply formatter to 5th column
+        vFormatter.format(data, 4+add);
+        pFormatter.format(data, 5+add);
+        tFormatter.format(data, 6+add);
         var table = new google.visualization.Table(document.getElementById('table_div'));
         table.draw(data, {showRowNumber: false,
                           allowHtml: true,
@@ -209,7 +207,6 @@
 
       	function drawMarkersMap(){
 
-    	if(COUNTRY_DISP){
             var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
             var h= Math.round(parseInt(w.split('p')[0])*347/556);
             document.getElementById('chart_div').style.height= h.toString()+'px';
@@ -221,19 +218,12 @@
         			region:      'COUNTRY_CODE',
         			displayMode: 'markers',
         			colorAxis:  {
-        	        	//values: [-100     ,-40      ,-33      ,-20      ,-6       ,5        ,13       ,27       ,29       ,34       ,42       ,46       ,100],
-        	        	//colors: ['#000080','#000080','#0000C0','#0000FF','#0060FF','#00C0FF','#00C000','#00C000','#FF6600','#FF3300','#CC0000','#800000','#800000']},
-        			    //values: [-40      ,-33      ,-20      ,-6       ,5        ,22       ,29       ,34       ,42       ,46],
-        				//colors: ['#5050A0','#5050E0','#5050FF','#50B0FF','#50F0FF','#00C000','#FFB650','#FF8350','#EC5050','#A05050']},
         			    values: [-40   ,0        ,22     ,36      ,46],
         				colors: ["indigo",'cyan','green','yellow','red']},
-        				legend: {numberFormat:'.##&deg;C'},
+        				legend: {numberFormat:'##C'},
         			resolution: 'RESOLUTION'};
-
             var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
       	   chart.draw(data, options);
-      	 };
-      	 
       	}
     </script>    
   </head>
@@ -256,7 +246,7 @@
               <li><a href="/">World</a></li>            
               <li><a href="/us">USA</a></li>
               <li><a href="/eu">Europe</a></li>    
-              <li class="active"><a href="#results">"SEARCH_TERM" results</a></li>    
+              <li class="active"><a href="#results">COUNTRY_NAME</a></li>    
               <li><a href="#about">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -276,7 +266,7 @@
 				<form name="input" action="/" method="post">
 				<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
 				<label style="font-size:20px;">Weather-Rank
-				   <input name="search" style="width:300px" value="SEARCH_TERM"></input>
+				   <input name="search" style="width:300px" value=""></input>
 					<button>search</button>
 				</label>
 				</a>

@@ -29,6 +29,7 @@
         padding: 0% 10%;
         height:  100px;
         }
+      
       }
 
       /* Landscape phones and down */
@@ -47,6 +48,7 @@
         padding: 0% 10%;
         height:  100px;
         }
+       
       }
 
       /* All form factors */
@@ -109,7 +111,7 @@
         font-size: 11px;
       }
       .footer a {
-        color: #bbbbdd;
+        color: #ccccff;
       }
       /* http://support.addthis.com/customer/portal/questions/1136093-share-buttons-in-center-position */      
       div.addthis_toolbox {
@@ -120,16 +122,12 @@
 	  .comment {
         text-align: right;
      }
-<<<<<<< HEAD
-<<<<<<< HEAD
      
-=======
-
      #table_div a{
         color: black;
      }   
-       
->>>>>>> develop
+             
+     
      a {
      	text-decoration: none;
      }
@@ -139,18 +137,6 @@
      }     
      
     </style>
-=======
-
-     #chart_div {
-        padding: 0% 10%;
-        min-height:  300px;
-     }
-
-      .test {
-          border: 1px;
-        }
-   </style>
->>>>>>> 5963e48eed7566afdd0585ba850b4a0f781440b6
     <!-- asynchronous google analytics. -->
     <script type="text/javascript">
 
@@ -163,6 +149,7 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+
     </script>
 
     <script type='text/javascript' src='https://www.google.com/jsapi'></script>
@@ -190,18 +177,16 @@
             var m = d.getMinutes();
             if (m < 10) m = "0" + m;
             values[i][8]= '<a href="#" data-toggle="tooltip" title="'+d.toString()+'">'+d.getHours()+':'+m+'</a>';
-				   //values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
+			//values[i][3]= d.getHours()+':'+d.getMinutes(); // "Wed Jun 29 2011 09:52:48 GMT-0700 (PDT)"
         }
 
         data.addRows(values);
-        //alert(JSON.stringify(values));
+
 
         var tFormatter = new google.visualization.NumberFormat({suffix: '&deg;C',  fractionDigits: 1});
         var vFormatter = new google.visualization.NumberFormat({suffix: 'm/s'   ,  fractionDigits: 1});
         var pFormatter = new google.visualization.NumberFormat({suffix: '%'     ,  fractionDigits: 0});
-        //var Tformatter = new google.visualization.DateFormat({pattern: "h:mm a"});
 
-        //TFormatter.format(data, 4);
         tFormatter.format(data, 4); // Apply formatter to 5th column
         vFormatter.format(data, 5);
         pFormatter.format(data, 6);
@@ -219,22 +204,15 @@
      google.setOnLoadCallback(drawRegionsMap);
 
       function drawRegionsMap() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
         var values= CHART_DATA;
         //alert(JSON.stringify(values));
-
         var data = google.visualization.arrayToDataTable(values);
         var options = {
-        	colorAxis: {
-        		//values: [-40      ,-33      ,-20      ,-6       ,5        ,22       ,29       ,34       ,42       ,46],
-        		//colors: ['#5050A0','#5050E0','#5050FF','#50B0FF','#50F0FF','#50F050','#FFB650','#FF8350','#EC5050','#A05050']},
-        		colors: ['grey','yellow', 'green'],minValue: 0, maxValue: 1000},
-        	//legend: 'none',
-        	width:'automatic'};
+        		region: '150',
+        		colorAxis: {colors: ['grey','yellow', 'green'],minValue: 0, maxValue: 1000},
+        		//legend: 'none',
+        		width:'automatic'
+        	};
         
         //set map size
         var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
@@ -242,12 +220,6 @@
         document.getElementById('chart_div').style.height= h.toString()+'px';
         
         //plot map         
-=======
-        var data = google.visualization.arrayToDataTable(CHART_DATA);
-
-        var options = {colorAxis: {colors: ['red','yellow', 'green']},legend: 'none'};
-
->>>>>>> 5963e48eed7566afdd0585ba850b4a0f781440b6
         var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
         chart.draw(data, options);
         
@@ -260,6 +232,8 @@
 			document.body.appendChild(form);
     		form.submit();
         });
+      
+        	
     };
     </script>
 
@@ -279,10 +253,10 @@
           </button>
           <a class="brand" href="/">Weather-Rank</a>
           <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="/">World</a></li>            
+            <ul class="nav">           
+              <li><a href="/">World</a></li>
               <li><a href="/us">USA</a></li>
-              <li><a href="/eu">Europe</a></li>
+              <li class="active"><a href="/eu">Europe</a></li>                
               <li><a href="#top10">Top 10</a></li>
               <li><a href="#FAQ">FAQ</a></li>
             </ul>
@@ -294,7 +268,7 @@
     <!-- We use row-fluid inside containers to achieve a resizable layout. -->
     <!-- blogs.endjin.com/2013/04/tips-for-implementing-responsive-designs-using-bootstrap/ -->
     <!-- http://stackoverflow.com/a/12270322 -->
-    <div class="container border">
+    <div class="container">
       
 
       <!-- Font and paired font of .heading/.subheading and body from Google Fonts -->
@@ -310,7 +284,7 @@
         <div class="span8 offset2">
           <!-- Special typography from Bootstrap for lead paragraph. -->
           <!-- http://twitter.github.io/bootstrap/base-css.html#typography -->
-          <p class="lead">The World Weather Ranking.</p>
+          <p class="lead">Europe's Weather Ranking.</p>
         </div>
         <div class="span2">
 
@@ -332,9 +306,8 @@
       <div class="row-fluid">
       	<div id="chart_div" class="span12 caption" ></div>
 
-        <div class="span12" style="height: 20px;"></div>
+         <div class="span12" style="height: 20px;"></div>
 
-<<<<<<< HEAD
 			<div class="row-fluid">
 		   	<div class="alert alert-success span3 offset1 info">
 					<strong>Begin your search here</strong><br>    
@@ -347,7 +320,7 @@
 					  		<button>search</button>
                	</a>					
 						<br>
-					   <span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>	
+					   <span style="font-size:10px;color:grey">NUM_LOCATIONS stations from Europe have reported weather</span>	
 					</form> 
 				</div>         
          </div>
@@ -355,7 +328,7 @@
          	<div class="span12" style="height: 60px;"></div>    
          	<div class="span6 offset3 caption">
 					<h3>CHAMPION</h3>
-         		<p><em>"Best Weather in the World"</em></p>
+         		<p><em>"Best Weather in Europe"</em></p>
          	</div>
          	<div class="span2">
             	<img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img>
@@ -443,30 +416,6 @@
       </div>		
 		
       <div class="span12" style="height: 60px;"></div>      
-=======
-		<div class="span12 caption">
-				<form  name="input" action="/" method="post">
-					<a href="#" data-toggle="tooltip" title="Search by city, country, IATA or ICAO airport code">
-					  <input name="search" style="width:300px"></input>
-					  <button>search</button>
-               </a>					
-					<br>
-					<span style="font-size:10px;color:grey">NUM_LOCATIONS stations have reported weather</span>
-				</form> 
-		</div>         
-         
-        <div class="span12" style="height: 60px;"></div>    
-        <div class="span4 offset4 caption">
-		   <h3>CHAMPION</h3>
-           <p><em>"Best Weather in the World"</em></p>
-        </div>
-        <div class="span1"> <img src="http://openclipart.org/people/Gerald_G/Gerald_G_Beach_Trip.svg"></img></div>	
-        <div id="table_div" class="span10 offset1 caption"></div>
-        <div class="span12 caption" style="font-size:10px;">*UTCI stands for  Universal Thermal Climate Index</div> 
-        <div class="span12" style="height: 60px;"></div>
-      </div>
-
->>>>>>> 5963e48eed7566afdd0585ba850b4a0f781440b6
       <!-- Not crucial, but we put this under a CC By-SA 3.0 license. -->
       <!-- http://creativecommons.org/licenses/ -->
       <div class="row-fluid footer">

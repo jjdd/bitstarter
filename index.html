@@ -29,7 +29,6 @@
         padding: 0% 10%;
         height:  100px;
         }
-      
       }
 
       /* Landscape phones and down */
@@ -48,7 +47,6 @@
         padding: 0% 10%;
         height:  100px;
         }
-       
       }
 
       /* All form factors */
@@ -111,7 +109,7 @@
         font-size: 11px;
       }
       .footer a {
-        color: #ccccff;
+        color: #bbbbdd;
       }
       /* http://support.addthis.com/customer/portal/questions/1136093-share-buttons-in-center-position */      
       div.addthis_toolbox {
@@ -122,7 +120,11 @@
 	  .comment {
         text-align: right;
      }
-     
+
+     #table_div a{
+        color: black;
+     }   
+       
      a {
      	text-decoration: none;
      }
@@ -144,7 +146,6 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-
     </script>
 
     <script type='text/javascript' src='https://www.google.com/jsapi'></script>
@@ -201,10 +202,18 @@
      google.setOnLoadCallback(drawRegionsMap);
 
       function drawRegionsMap() {
+
         var values= CHART_DATA;
         //alert(JSON.stringify(values));
+
         var data = google.visualization.arrayToDataTable(values);
-        var options = {colorAxis: {colors: ['red','yellow', 'green'],minValue: 0, maxValue: 1000},legend: 'none', width:'automatic'};
+        var options = {
+        	colorAxis: {
+        		//values: [-40      ,-33      ,-20      ,-6       ,5        ,22       ,29       ,34       ,42       ,46],
+        		//colors: ['#5050A0','#5050E0','#5050FF','#50B0FF','#50F0FF','#50F050','#FFB650','#FF8350','#EC5050','#A05050']},
+        		colors: ['grey','yellow', 'green'],minValue: 0, maxValue: 1000},
+        	//legend: 'none',
+        	width:'automatic'};
         
         //set map size
         var e = document.getElementById('table_div'),s = window.getComputedStyle(e),w = s.getPropertyValue('width');
@@ -217,29 +226,13 @@
         
         //listen mouse click   
         google.visualization.events.addListener(chart, 'select', function(){
-         	var country= values[chart.getSelection()[0].row+1][0];
-         	if(country==='United States'){
-         	   var form = document.createElement("form");
-    				form.setAttribute("method", "get");
-    				form.setAttribute("action", "/us");
-			   	document.body.appendChild(form);
-    				form.submit();
-         	}
-         	else{
-         		var form = document.createElement("form");
-    				form.setAttribute("method", "post");
-    				form.setAttribute("action", "/");
-            	var hiddenField = document.createElement("input");
-            	hiddenField.setAttribute("type", "hidden");
-            	hiddenField.setAttribute("name", "search");
-            	hiddenField.setAttribute("value", country);
-            	form.appendChild(hiddenField);
-			   	document.body.appendChild(form);
-    				form.submit();
-    			};
-        });       
-      
-        	
+         	var country= values[chart.getSelection()[0].row+1][0].v;
+         	var form= document.createElement("form");
+			form.setAttribute("method", "get");
+         	form.setAttribute("action", "/"+country);
+			document.body.appendChild(form);
+    		form.submit();
+        });
     };
     </script>
 

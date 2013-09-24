@@ -1,5 +1,5 @@
 var express = require('express');
-var fs = require('fs')
+var fs = require('fs');
 var http = require('http');
 var app = express.createServer(express.logger());
 
@@ -9,20 +9,50 @@ var chart_json;
 //used for json parsing
 app.use(express.bodyParser());
 
+var NWPColor= function(nwp){
+	if(nwp>500){
+		//  y0 +            (y1 - y0)*(x  - x0)/dx 
+		g= 220 + Math.round((128-220)*(nwp-500)/500);
+		r= 220 + Math.round(  (0-220)*(nwp-500)/500);
+		b= 0;
+	}
+	else
+	{
+		g= 128 + Math.round((220-128)*nwp/500);
+		r= 128 + Math.round((220-128)*nwp/500);
+		b= 128 + Math.round(  (0-128)*nwp/500);		
+	}
+	return "rgb("+r.toString()+","+g.toString()+","+b.toString()+")";	 
+};
+
+/*
+var NWPColor= function(nwp){
+	var maxval= 128;	
+	var yellowFact= maxval*(500-Math.abs(nwp-500))/500;
+	var red= Math.round((1000-nwp)/1000*maxval+yellowFact);
+	var green= Math.round(nwp/1000*maxval+yellowFact);
+	return "rgb("+red.toString()+","+green.toString()+",50)";	 
+	};
+*/
+
+var NWPStyle= function(nwp){return "<strong class='caption' style='color:" + NWPColor(nwp) + "'>" + nwp.toString() + "</strong>"};
+
+/*
 var NWPStyle= function(nwp){
    var maxval= 128;	
    var yellowFact= maxval*(500-Math.abs(nwp-500))/500;
 	var red= Math.round((1000-nwp)/1000*maxval+yellowFact);
 	var green= Math.round(nwp/1000*maxval+yellowFact);
 	return "<strong class='caption' style='color: rgb("+red.toString()+","+green.toString()+",50)'>"+ nwp.toString() + "</strong>";	 
-	};
+};
+*/
 
 var setNWP= function(data){
 	for (i in data){
 		data[i]= [NWPStyle(data[i][0])].concat(data[i].slice(1));
 		}
 	return data;
-	};
+};
 
 var removeTags= function(term){
 	term= term.replace(/<[^>]+>/g, '');
@@ -52,24 +82,29 @@ var getSelection= function(term,data){
 	return {data:result,columns:table_columns};
 };
 
-app.get('/', function(request, response) {
+app.get('/', function(request, response)
+{
   var html= fs.readFileSync('index.html').toString();
   var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
+  var air= JSON.parse(fs.readFileSync('airdata.json').toString());
   
   var champion= table_json.slice(0,10).map(function(x){
+	  x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
+	  x[4]=  '<a href="/'+air[x[2]][10]+'">' + x[4] + '</a>';
 	  x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings    
 	  x[12]= '<strong>' + x[12].toString() + '</strong>';		  
 	  return [x[0]].concat(x.slice(3,13));
   });//remove iata,icao by default
+
   
   var table_data= JSON.stringify(setNWP(champion));//send only first element
   //console.log(table_data);
   html= html.replace('CHART_DATA',chart_data);
   html= html.replace('TABLE_DATA',table_data);
-  html= html.replace('CHAMPION',table_json[0][3]+', '+table_json[0][4]);//city and country 
-  html= html.replace('COUNTRY',table_json[0][4]);//country
-  html= html.replace('CITY',table_json[0][3].split(',')[0]);//city   
+  html= html.replace('CHAMPION',removeTags(table_json[0][3])+', '+removeTags(table_json[0][4]));//city and country 
+  html= html.replace('COUNTRY',removeTags(table_json[0][4]));//country
+  html= html.replace('CITY',removeTags(table_json[0][3]).split(',')[0]);//city   
   html= html.replace('NUM_LOCATIONS',table_json.length);   
   response.send(html);
 });
@@ -93,14 +128,14 @@ app.get('/', function(request, response) {
 
 app.post('/', function(request, response) {
   var html= fs.readFileSync('results.html').toString();
-  var chart_data= fs.readFileSync('country_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
   var countries= JSON.parse(fs.readFileSync('countries.json').toString()); 
   var airports= JSON.parse(fs.readFileSync('airports.json').toString());
   var regions= JSON.parse(fs.readFileSync('regions.json').toString());
+  var air= JSON.parse(fs.readFileSync('airdata.json').toString());  
 
   //collapse spaces, heading and trailing 
-  var search_term= collapseSpaces(request.body.search)
+  var search_term= collapseSpaces(request.body.search);
   var selected;   
   if (search_term)  selected= getSelection(search_term,table_json); //filter
   else selected= {data:table_json, columns:{iata:false, icao:false}};
@@ -125,11 +160,11 @@ app.post('/', function(request, response) {
        var city= removeTags(x[3].split(',')[0])+' '+removeTags(x[1]);//city + IATA
        if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  removeTags(x[3].split(',')[0])+' '+removeTags(x[2]);
        var icao= x[2].replace('<strong>','').replace('</strong>','');
-       lat= airports[icao][0]
-       lon= airports[icao][1]
-       return [lat,lon,city,x[0]];//city + ICAO
+       lat= airports[icao][0];
+       lon= airports[icao][1];
+       return [lat,lon,city,Math.round(x[9]),x[0]];//city + ICAO
     });
-     country_data= JSON.stringify([['Lat','Lon','City','Points']].concat(c_data));
+     country_data= JSON.stringify([['Lat','Lon','City','UTCI','Points'],[0.0,0.0,'',0,0],[0.0,0.0,'',0,1000]].concat(c_data));
      country_disp= 'true';
      sel_cod= sel_countries.reduce(function(x,y){
      	 if(countries[x].length<countries[y].length) return x; else return y;
@@ -152,11 +187,11 @@ app.post('/', function(request, response) {
      r_data= selected.data.map(function(x){
        var city= removeTags(x[3].split(',')[0])+' '+removeTags(x[1]);//city + IATA
        if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  removeTags(x[3].split(',')[0])+' '+removeTags(x[2]);
-       lat= airports[x[2]][0]
-       lon= airports[x[2]][1]
-       return [lat,lon,city,x[0]];//city + ICAO
+       lat= airports[x[2]][0];
+       lon= airports[x[2]][1];
+       return [lat,lon,city,x[9],x[0]];//city + ICAO
     });
-     country_data= JSON.stringify([['Lat','Lon','City','Points']].concat(r_data));
+     country_data= JSON.stringify([['Lat','Lon','City','UTCI','Points']].concat(r_data));
      country_disp= 'true';
      sel_cod= sel_regions.reduce(function(x,y){
      	 if(regions[x].length<regions[y].length) return x; else return y;
@@ -169,16 +204,18 @@ app.post('/', function(request, response) {
 	};
 
 
-
   // remove the unused columns
   selected.data= selected.data.map(function(x){
-  			x= x.slice(0,13)
-         x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
-         x[12]= '<strong>' + x[12].toString() + '</strong>';
-  	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
-  	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
-  	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
-  	  		return x;  	  			
+  		x= x.slice(0,13);
+        var icao= removeTags(x[2]);
+  		x[3]=  '<a href="/icao/'+icao+'">' + x[3] + '</a>';
+  		x[4]=  '<a href="/'+air[icao][10]+'">' + x[4] + '</a>';  		
+        x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
+        x[12]= '<strong>' + x[12].toString() + '</strong>';
+  	  	if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
+  	  	if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
+  	  	if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
+  	  	return x;  	  			
   });
   
   var table_data= JSON.stringify(setNWP(selected.data));
@@ -193,7 +230,6 @@ app.post('/', function(request, response) {
   html= html.replace('RESOLUTION',resolution);
   response.send(html);  
 });
-
 
 app.get('/set_table', function(request, response) {
   //ack
@@ -273,6 +309,16 @@ app.get('/set_chart', function(request, response) {
   http.get(options6, function(response) {
 		    response.pipe(file6);
   });  
+
+  var options7 = {
+		    host: 'www.locusamoenus.eu',
+		    port: 80,
+		    path: '/airdata.json'
+};
+var file7 = fs.createWriteStream("airdata.json");
+http.get(options7, function(response) {
+		    response.pipe(file7);
+});    
   
 });
 
@@ -281,22 +327,28 @@ app.get('/us', function(request, response) {
   var chart_data= fs.readFileSync('us_chart.json').toString();
   var table_json= JSON.parse(fs.readFileSync('table.json').toString());
   var regions= JSON.parse(fs.readFileSync('regions.json').toString()); 
-
+  var air= JSON.parse(fs.readFileSync('airdata.json').toString());
+  
   table_json= table_json.filter(function(x){
   		return x[4]=='United States';
   	});
 
   var champion= table_json.slice(0,10).map(function(x){
+	  
 	  var name= x[3].split(', ');
 	  x[3]= name[0];  
 	  x[4]= regions[name[1]];  
+	  
+	  x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
+	  x[4]=  '<a href="/us/'+air[x[2]][9]+'">' + x[4] + '</a>';
+	  
 	  x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings    
 	  x[12]= '<strong>' + x[12].toString() + '</strong>';		  
 	  return [x[0]].concat(x.slice(3,13));
   });//remove iata,icao by default
   
-  var city= champion[0][1];
-  var region= champion[0][2];
+  var city= removeTags(champion[0][1]);
+  var region= removeTags(champion[0][2]);
   var table_data= JSON.stringify(setNWP(champion));//send only first element
   
   //console.log(table_data);
@@ -325,19 +377,22 @@ app.get('/eu', function(request, response) {
 	  var html= fs.readFileSync('eu.html').toString();
 	  var chart_data= fs.readFileSync('eu_chart.json').toString();
 	  var table_json= JSON.parse(fs.readFileSync('table.json').toString());
-
+	  var air= JSON.parse(fs.readFileSync('airdata.json').toString());
+	  
 	  table_json= table_json.filter(function(x){
 	  		return  EUROPE.reduce(function(y,z){return y || z.search(x[4])>=0;},false);
 	  	});
 
 	  var champion= table_json.slice(0,10).map(function(x){
+		  x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
+		  x[4]=  '<a href="/'+air[x[2]][10]+'">' + x[4] + '</a>';
 		  x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings    
 		  x[12]= '<strong>' + x[12].toString() + '</strong>';		  
 		  return [x[0]].concat(x.slice(3,13));
 	  });//remove iata,icao by default
 	  
-	  var ccity= champion[0][1]  
-	  var ccountry= champion[0][2];
+	  var ccity= removeTags(champion[0][1]);
+	  var ccountry= removeTags(champion[0][2]);
 	  var table_data= JSON.stringify(setNWP(champion));//send only 10 element
 	  
 	  
@@ -349,6 +404,159 @@ app.get('/eu', function(request, response) {
 	  html= html.replace('NUM_LOCATIONS',table_json.length);   
 	  response.send(html);
 	});
+
+app.all('/icao/*', function (req, res) {
+	console.log(req.params);
+	var icao= req.params[0];
+	var html= fs.readFileSync('icao.html').toString();
+	var table_json= JSON.parse(fs.readFileSync('table.json').toString());
+	var air= JSON.parse(fs.readFileSync('airdata.json').toString());
+	var row= table_json.filter(function(x){return x[2]===icao;})[0];
+	if (row[4]==="United States"){
+		row[3]= row[3].split(',')[0] + ', ' + row[13]; 
+	}
+	html= html.replace(/POIN/g,NWPStyle(row[0]));
+	html= html.replace(/CITY/g,row[3]);
+	html= html.replace(/COUN/g,row[4]);
+	html= html.replace(/WEAT/g,row[5]);
+	html= html.replace(/TEMP/g,row[6]);
+	html= html.replace(/WIND/g,Math.round(row[7],1));
+	html= html.replace(/HUMI/g,row[8]);
+	html= html.replace(/UTCI/g,row[9]);
+	html= html.replace(/TIME/g,row[10]);
+	html= html.replace(/CRAN/g,row[11]);
+	html= html.replace(/WRAN/g,row[12]);
+	
+	var name= '';
+	if (!air[icao][1]===row[3]) name= '<p class="lead">'+air[icao][1]+'</p>';
+	html= html.replace(/NAME/g,name);
+	
+	var badge= '<span class="badge" style="background-color:'+NWPColor(row[0]) +'; font-size: 36px; height: 40px;line-height: 36px">'+row[0]+'</span>';
+	html= html.replace(/BADGE/g,badge);	
+	var desc= row[5].match(/title='([^']*)'/)[1];
+	html= html.replace(/DESC/g,desc);
+	
+	res.send(html);
+
+	//title='light drizzle; fog'
+});
+
+app.all('/us/*', function(req, res) {
+	  var rec= req.params[0];
+	  
+	  var html= fs.readFileSync('country.html').toString();
+	  var table_json= JSON.parse(fs.readFileSync('table.json').toString());
+	  var airports= JSON.parse(fs.readFileSync('airports.json').toString());
+	  var regions= JSON.parse(fs.readFileSync('regions.json').toString());
+	  var air= JSON.parse(fs.readFileSync('airdata.json').toString());
+
+      selected= {data:table_json.filter(function (x){return air[x[2]][9]==rec;}), columns:{iata:false, icao:false}};
+	     
+	  //add country chart
+	  var country_name= regions[rec];
+	  var country_code= 'US-'+rec;
+	  var resolution= 'provinces';  
+	  
+	  var c_data= selected.data.map(function(x){
+	       var city= x[3].split(',')[0]+' '+x[1];//city + IATA
+	       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  x[3].split(',')[0]+' '+x[2];
+	       lat= airports[x[2]][0];
+	       lon= airports[x[2]][1];
+	       return [lat,lon,city,x[9],x[0]];//city + ICAO
+	    });
+	  var country_data= JSON.stringify([['Lat','Lon','City','UTCI','Points'],[0.0,0.0,'',0,0],[0.0,0.0,'',0,1000]].concat(c_data));
+	 
+	  // remove the unused columns
+	  selected.data= selected.data.map(function(x){
+	  		x= x.slice(0,13);
+	  		x[3]=  '<a href="/icao/'+x[2]+'">' + x[3].split(',')[0] + '</a>';
+	        x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
+	        x[12]= '<strong>' + x[12].toString() + '</strong>';
+	  	    
+	        //country es redundante
+	        x= x.slice(0,4).concat(x.slice(5));
+	        
+	        if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
+	  	  	if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
+	  	  	if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
+	  	 
+	  	  	return x;  	  			
+	  });
+	  
+  
+	  var table_data= JSON.stringify(setNWP(selected.data));
+	  var table_columns= JSON.stringify(selected.columns);
+	  html= html.replace('TABLE_DATA',table_data);
+	  html= html.replace('TABLE_COLUMNS',table_columns);    
+	  html= html.replace('NUM_LOCATIONS',selected.data.length); 
+	  html= html.replace('COUNTRY_DATA',country_data);
+	  html= html.replace('COUNTRY_CODE',country_code);
+	  html= html.replace('COUNTRY_NAME',country_name);  	  
+	  html= html.replace('RESOLUTION',resolution);
+	  res.send(html);  
+	});
+
+app.all('/*', function (req, res) {
+	  var coc= req.params[0];
+	  var countries= JSON.parse(fs.readFileSync('countries.json').toString()); 
+	  
+	  if (typeof countries[coc] === "undefined"){
+		  res.send("Invalid");
+	  }
+	  else
+	  {
+	  
+	  var html= fs.readFileSync('country.html').toString();
+	  var table_json= JSON.parse(fs.readFileSync('table.json').toString());
+	  var airports= JSON.parse(fs.readFileSync('airports.json').toString());
+	  var air= JSON.parse(fs.readFileSync('airdata.json').toString());
+
+      selected= {data:table_json.filter(function (x){return air[x[2]][10]==coc}), columns:{iata:false, icao:false}};
+	     
+	  //add country chart
+	  var country_code= coc;
+	  var country_name= countries[coc];
+	  var resolution= 'countries';
+
+	  var c_data= selected.data.map(function(x){
+	       var city= x[3].split(',')[0]+' '+x[1];//city + IATA
+	       if (x[1]==='   ' || x[1]==='  ' ||  x[1]===' ' ||  x[1]==='') city=  removeTags(x[3].split(',')[0])+' '+removeTags(x[2]);
+	       var icao= x[2];
+	       lat= airports[icao][0];
+	       lon= airports[icao][1];
+	       return [lat,lon,city,Math.round(x[9]),x[0]];
+	    });
+	  var country_data= JSON.stringify([['Lat','Lon','City','UTCI','Points'],[0.0,0.0,'',0,0],[0.0,0.0,'',0,1000]].concat(c_data));
+
+	  // remove the unused columns
+	  selected.data= selected.data.map(function(x){
+	  			x= x.slice(0,13);
+		  		x[3]=  '<a href="/icao/'+x[2]+'">' + x[3] + '</a>';
+	            x[11]= '<strong>' + x[11].toString() + '</strong>';//rankings
+	            x[12]= '<strong>' + x[12].toString() + '</strong>';
+		        //country es redundante
+		        x= x.slice(0,4).concat(x.slice(5));
+	  	  		if (!selected.columns.iata && !selected.columns.icao) x=[x[0]].concat(x.slice(3));
+	  	  		if (!selected.columns.iata &&  selected.columns.icao) x=[x[0]].concat(x.slice(2));
+	  	  		if ( selected.columns.iata && !selected.columns.icao) x=x.slice(0,2).concat(x.slice(3));
+	  	  		return x;  	  			
+	  });
+	  
+	  var table_data= JSON.stringify(setNWP(selected.data));
+	  var table_columns= JSON.stringify(selected.columns);
+	  html= html.replace('TABLE_DATA',table_data);
+	  html= html.replace('TABLE_COLUMNS',table_columns);    
+	  html= html.replace('NUM_LOCATIONS',selected.data.length); 
+	  html= html.replace('COUNTRY_DATA',country_data);
+	  html= html.replace('COUNTRY_CODE',country_code);
+	  html= html.replace('COUNTRY_NAME',country_name);  	  
+	  html= html.replace('RESOLUTION',resolution);
+	  res.send(html);
+	  
+	  }
+
+});
+
 
 
 var port = process.env.PORT || 8000;

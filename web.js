@@ -116,22 +116,6 @@ app.get('/', function(request, response)
   response.send(html);
 });
 
-/*
-		[
-        ['City',   'Population', 'Area'],
-        ['Rome',      2761477,    1285.31],
-        ['Milan',     1324110,    181.76],
-        ['Naples',    959574,     117.27],
-        ['Turin',     907563,     130.17],
-        ['Palermo',   655875,     158.9],
-        ['Genoa',     607906,     243.60],
-        ['Bologna',   380181,     140.7],
-        ['Florence',  371282,     102.41],
-        ['Fiumicino', 67370,      213.44],
-        ['Anzio',     52192,      43.43],
-        ['Ciampino',  38262,      11]
-      ]
-*/
 
 app.post('/', function(request, response) {
   var html= fs.readFileSync('results.html').toString();
@@ -424,6 +408,7 @@ app.all('/icao/*', function (req, res) {
 	if (row[4]==="United States"){
 		row[3]= row[3].split(',')[0] + ', ' + row[13]; 
 	}
+	html= html.replace(/ICAO/g,icao);//usado para las graficas
 	html= html.replace(/POIN/g,NWPStyle(row[0]));
 	html= html.replace(/CITY/g,row[3]);
 	html= html.replace(/COUN/g,row[4]);
@@ -437,7 +422,7 @@ app.all('/icao/*', function (req, res) {
 	html= html.replace(/WRAN/g,row[12]);
 	
 	var name= '';
-	if (air[icao][1]!==row[3]) name= '<p class="lead">'+air[icao][1]+'</p>';
+	//if (air[icao][1]!==row[3]) name= '<p class="lead">'+air[icao][1]+'</p>';
 	html= html.replace(/NAME/g,name);
 	
 	html= html.replace(/LATI/g,air[icao][6]);
@@ -447,7 +432,6 @@ app.all('/icao/*', function (req, res) {
 	html= html.replace(/BADGE/g,badge);	
 	var desc= row[5].match(/title='([^']*)'/)[1];
 	html= html.replace(/DESC/g,desc);
-	
 	res.send(html);
 
 	//title='light drizzle; fog'

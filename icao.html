@@ -139,6 +139,9 @@
       })();
     </script>
     
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <script type='text/javascript' src='http://locusamoenus.eu/table/ICAO.js'></script>
+    
     <script type="text/javascript">
     function setTime(){
        var d = new Date("TIME");
@@ -148,7 +151,6 @@
        e.innerHTML= d.toString();
     }
     </script>  
-    
     </head>
   <body  onload="setTime();">
 
@@ -203,22 +205,66 @@
 
         <div class="span12" style="height: 30px;"></div>
 
-	  	<div class="span12 caption">
-	  		<p>Nice weather points: POIN</p>
-	  		<p>Temperature: TEMP&deg;C</p>
-	  		<p>Wind: WINDm/s</p>
-	  		<p>Humidity: HUMI%</p>
-	  		<p>U.T.C.I: UTCI</p>
-	  		<p>Weather: DESC</p>
-	  		<p><em id="time"></em></p>
-	  	</div>
+	    <div class="row-fluid">
+        <div class="span12">
+
+	  		<div class="span6">
+	  		    <h2>Weather</h2>
+	  			<p>WEAT DESC</p>
+	  			<p>Nice weather points: POIN</p>
+	  			<p>Temperature: TEMP&deg;C</p>
+	  			<p>Wind: WINDm/s</p>
+	  			<p>Humidity: HUMI%</p>
+	  			<p>U.T.C.I: UTCI</p>
+	  			<p>Last report: <em id="time"></em></p>
+	  		</div>
+
+	  		<div class="span6 caption">
+            	<img src="http://maps.googleapis.com/maps/api/staticmap?center=LATI,LONG&zoom=9&size=400x300&maptype=terrain&markers=color:red%7Ccolor:red%7Clabel:x%7CLATI,LONG&sensor=false">
+			</div>
+        	
+		</div>
+       
+        </div>
 
         <div class="span12" style="height: 30px;"></div>
+        
+        <div class="span6"><h2>Forecast</h2></div> 
 
-	  	<div class="span12 caption">
-            <img src="http://maps.googleapis.com/maps/api/staticmap?center=LATI,LONG&zoom=9&size=400x300&maptype=terrain&markers=color:red%7Ccolor:red%7Clabel:x%7CLATI,LONG&sensor=false">
+
+		<div class="row-fluid">
+		    <div class="span12">
+		        <div class="row-fluid">
+		            <div class="span6">
+		                <div id="chart_NWP"></div>
+		            </div>
+		            <div class="span6">
+		                <div id="chart_U"></div>
+		            </div>
+		        </div>
+		        <div class="row-fluid">
+		        </div>
+		        <div class="row-fluid">
+		            <div class="span6">
+		                <div id="chart_T"></div>
+		            </div>
+		            <div class="span6">
+		                <div id="chart_W"></div>
+		            </div>            
+		        </div>
+		        <div class="row-fluid">
+		        </div>
+		        <div class="row-fluid">
+		            <div class="span6">
+		                <div id="chart_C"></div>
+		            </div>
+		            <div class="span6">
+		                <div id="chart_P"></div>
+		            </div>
+		        </div>
+		    </div>
 		</div>
-		
+        
         <div class="span12" style="height: 30px;"></div>
 
         <div id="about" class="span4 offset4 actions statistics">
